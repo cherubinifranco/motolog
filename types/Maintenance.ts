@@ -5,4 +5,5 @@ export type Maintenance = {
   mileage: number;
   date: string;
   cost: number;
+  note?: string;
 };

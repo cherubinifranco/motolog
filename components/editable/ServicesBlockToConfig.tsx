@@ -1,16 +1,22 @@
-import { useBikeContext } from "@/context/BikeContext";
 import { useServicesItems } from "@/hooks/useServicesItems";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ServicesBlockToConfig() {
-  const { selectedBike } = useBikeContext();
   const { items, loading } = useServicesItems();
-  const bikeId = selectedBike?.id;
 
-  if (selectedBike == null) return null;
-
-  if (loading) return <Text>Loading...</Text>;
+  if (loading)
+    return (
+      <View style={styles.toggleActive}>
+        <ActivityIndicator />
+      </View>
+    );
 
   return (
     <View>

@@ -1,26 +1,27 @@
-import { Text, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 import { useBikeContext } from "@/context/BikeContext";
 import { useMaintenance } from "@/hooks/useMaintenance";
+import { useServicesItems } from "@/hooks/useServicesItems";
 import { Service } from "@/types/Service";
 import { ServiceItem } from "../components/ServiceItem";
-import { useServicesItems } from "../hooks/useServicesItems";
 
 export default function ServicesScreen() {
   const { selectedBike } = useBikeContext();
-  const { items, loading } = useServicesItems();
-  const bikeId = selectedBike?.id;
+  const { items: serviceItems, loading: loadingServices } = useServicesItems();
 
-  const { maintenance } = useMaintenance(bikeId);
+  const { items: maintenanceitems, loading: loadingMaitenance } =
+    useMaintenance();
 
   if (selectedBike == null) return null;
+  if (loadingServices || loadingMaitenance) return <ActivityIndicator />;
 
-  if (loading) return <Text>Loading...</Text>;
+  const bikeMaitenance = maintenanceitems.filter(
+    (m) => m.bikeId == selectedBike.id,
+  );
 
   function getLastService(service: Service) {
-    if (selectedBike == null) return 0;
-
-    const serviceMaintenance = maintenance.filter(
+    const serviceMaintenance = bikeMaitenance.filter(
       (m) => m.serviceId === service.id,
     );
 
@@ -29,7 +30,7 @@ export default function ServicesScreen() {
     return last;
   }
 
-  const sortedServices = items
+  const sortedServices = serviceItems
     .map((service) => {
       const last = getLastService(service);
       const kmRemaining = last

@@ -1,7 +1,10 @@
-// app/(tabs)/historial.tsx
+import LogItem from "@/components/LogItem";
+import { useMaintenance } from "@/hooks/useMaintenance";
+import { useServicesItems } from "@/hooks/useServicesItems";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,82 +15,89 @@ import {
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type Mantenimiento = {
-  id: string;
-  fecha: string;
-  tipo: string;
-  kilometraje: number;
-  costo: number;
-  estado: "Completado" | "Pendiente";
-  notas?: string;
+type Filter = {
+  text: string;
+  serviceIds: number[];
+  fromDate?: string;
+  toDate?: string;
+  minCost?: number;
+  maxCost?: number;
 };
 
-const mantenimientos: Mantenimiento[] = [
-  {
-    id: "1",
-    fecha: "15 mar 2026",
-    tipo: "Cambio de aceite",
-    kilometraje: 15234,
-    costo: 8500,
-    estado: "Completado",
-  },
-  {
-    id: "2",
-    fecha: "10 feb 2026",
-    tipo: "Revisión de frenos",
-    kilometraje: 12800,
-    costo: 25000,
-    estado: "Completado",
-  },
-  {
-    id: "3",
-    fecha: "05 feb 2026",
-    tipo: "Lubricación de cadena",
-    kilometraje: 12500,
-    costo: 4500,
-    estado: "Completado",
-  },
-  {
-    id: "4",
-    fecha: "20 ene 2026",
-    tipo: "Cambio de filtro de aire",
-    kilometraje: 11000,
-    costo: 12000,
-    estado: "Completado",
-  },
-];
+const baseFilter: Filter = {
+  text: "",
+  serviceIds: [],
+};
 
 export default function HistorialScreen() {
+  const [filter, setFilter] = useState<Filter>(baseFilter);
+
   const [searchText, setSearchText] = useState("");
-  const [filtroActivo, setFiltroActivo] = useState<
-    "Todos" | "Aceite" | "Frenos" | "Cadena"
-  >("Todos");
 
-  const filtros = ["Todos", "Aceite", "Frenos", "Cadena"];
+  const { items: servicesItems, loading: loadingServices } = useServicesItems();
+  const { items: maintenanceItems, loading: loadingMaitenance } =
+    useMaintenance();
 
-  const mantenimientosFiltrados = mantenimientos.filter((item) => {
-    const coincideBusqueda =
-      item.tipo.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.fecha.toLowerCase().includes(searchText.toLowerCase());
+  const serviceMap = useMemo(() => {
+    return new Map(servicesItems.map((s) => [s.id, s]));
+  }, [servicesItems]);
 
-    let coincideFiltro = true;
-    if (filtroActivo !== "Todos") {
-      coincideFiltro = item.tipo
-        .toLowerCase()
-        .includes(filtroActivo.toLowerCase());
-    }
+  const enrichedMaintenances = useMemo(() => {
+    return maintenanceItems.map((m) => {
+      const service = serviceMap.get(m.serviceId);
 
-    return coincideBusqueda && coincideFiltro;
-  });
+      return {
+        ...m,
+        service,
+      };
+    });
+  }, [maintenanceItems, serviceMap]);
+
+  const filteredItems = useMemo(() => {
+    return enrichedMaintenances.filter((item) => {
+      const service = serviceMap.get(item.serviceId);
+
+      const matchesText =
+        filter.text === "" ||
+        service?.title.toLowerCase().includes(filter.text.toLowerCase());
+
+      const matchesService =
+        filter.serviceIds.length === 0 ||
+        filter.serviceIds.includes(item.serviceId);
+
+      const itemDate = new Date(item.date).getTime();
+
+      const matchesFrom =
+        !filter.fromDate || itemDate >= new Date(filter.fromDate).getTime();
+
+      const matchesTo =
+        !filter.toDate || itemDate <= new Date(filter.toDate).getTime();
+
+      const matchesMin =
+        filter.minCost === undefined || item.cost >= filter.minCost;
+
+      const matchesMax =
+        filter.maxCost === undefined || item.cost <= filter.maxCost;
+
+      return (
+        matchesText &&
+        matchesService &&
+        matchesFrom &&
+        matchesTo &&
+        matchesMin &&
+        matchesMax
+      );
+    });
+  }, [servicesItems, filter, serviceMap]);
 
   const insets = useSafeAreaInsets();
+
   return (
     <View style={{ flex: 1, paddingTop: insets.top }}>
       <View style={styles.header}>
         <Text style={styles.title}>Historial</Text>
       </View>
 
-      {/* Barra de búsqueda */}
       <View style={styles.searchContainer}>
         <Ionicons
           name="search"
@@ -104,76 +114,52 @@ export default function HistorialScreen() {
         />
       </View>
 
-      {/* Filtros */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.filtrosScroll}
         contentContainerStyle={styles.filtrosContainer}
       >
-        {filtros.map((filtro) => (
-          <TouchableOpacity
-            key={filtro}
-            style={[
-              styles.filtroChip,
-              filtroActivo === filtro && styles.filtroChipActive,
-            ]}
-            onPress={() => setFiltroActivo(filtro as any)}
-          >
-            <Text
-              style={[
-                styles.filtroText,
-                filtroActivo === filtro && styles.filtroTextActive,
-              ]}
+        {servicesItems.map((service) => {
+          const isActive = filter.serviceIds.includes(service.id);
+
+          return (
+            <TouchableOpacity
+              key={service.id}
+              style={[styles.filtroChip, isActive && styles.filtroChipActive]}
+              onPress={() => {
+                setFilter((prev) => ({
+                  ...prev,
+                  serviceIds: isActive
+                    ? prev.serviceIds.filter((id) => id !== service.id)
+                    : [...prev.serviceIds, service.id],
+                }));
+              }}
             >
-              {filtro}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[styles.filtroText, isActive && styles.filtroTextActive]}
+              >
+                {service.title}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {mantenimientosFiltrados.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Ionicons name="document-text-outline" size={60} color="#CCC" />
-            <Text style={styles.emptyText}>
-              No se encontraron mantenimientos
-            </Text>
-          </View>
+        {filteredItems.length === 0 ? (
+          loadingServices || loadingMaitenance ? (
+            <ActivityIndicator style={{ padding: 20 }} />
+          ) : (
+            <View style={styles.emptyState}>
+              <Ionicons name="document-text-outline" size={60} color="#CCC" />
+              <Text style={styles.emptyText}>
+                No se encontraron mantenimientos
+              </Text>
+            </View>
+          )
         ) : (
-          mantenimientosFiltrados.map((item) => (
-            <TouchableOpacity key={item.id} style={styles.historialCard}>
-              <View style={styles.cardHeader}>
-                <Text style={styles.fecha}>{item.fecha}</Text>
-                <View style={styles.estadoBadge}>
-                  <Text style={styles.estadoText}>{item.estado}</Text>
-                </View>
-              </View>
-
-              <Text style={styles.tipo}>{item.tipo}</Text>
-
-              <View style={styles.detallesRow}>
-                <View style={styles.detalleItem}>
-                  <Ionicons name="speedometer-outline" size={18} color="#666" />
-                  <Text style={styles.detalleText}>
-                    {item.kilometraje.toLocaleString()} km
-                  </Text>
-                </View>
-                <View style={styles.detalleItem}>
-                  <Ionicons name="cash-outline" size={18} color="#22C55E" />
-                  <Text style={styles.detalleText}>
-                    ${item.costo.toLocaleString("es-AR")}
-                  </Text>
-                </View>
-              </View>
-
-              {item.notas && <Text style={styles.notas}>{item.notas}</Text>}
-
-              <TouchableOpacity style={styles.verMas}>
-                <Text style={styles.verMasText}>Ver detalles y fotos →</Text>
-              </TouchableOpacity>
-            </TouchableOpacity>
-          ))
+          filteredItems.map((item) => <LogItem item={item} key={item.id} />)
         )}
       </ScrollView>
     </View>
@@ -219,11 +205,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   filtrosContainer: {
+    marginBottom: 10,
     paddingHorizontal: 16,
     paddingVertical: 8,
     gap: 8,
   },
   filtroChip: {
+    height: 40,
     backgroundColor: "#FFF",
     paddingHorizontal: 18,
     paddingVertical: 8,
@@ -244,76 +232,9 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   scrollContent: {
+    minHeight: "100%",
     padding: 16,
     paddingBottom: 24,
-  },
-  historialCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 14,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  fecha: {
-    fontSize: 15,
-    color: "#666",
-    fontWeight: "500",
-  },
-  estadoBadge: {
-    backgroundColor: "#22C55E",
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  estadoText: {
-    color: "#FFF",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  tipo: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#111",
-    marginBottom: 12,
-  },
-  detallesRow: {
-    flexDirection: "row",
-    gap: 24,
-    marginBottom: 12,
-  },
-  detalleItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-  detalleText: {
-    fontSize: 15,
-    color: "#444",
-  },
-  notas: {
-    fontSize: 14,
-    color: "#666",
-    fontStyle: "italic",
-    marginBottom: 12,
-  },
-  verMas: {
-    marginTop: 8,
-    alignSelf: "flex-start",
-  },
-  verMasText: {
-    color: "#FF6200",
-    fontSize: 14,
-    fontWeight: "600",
   },
   emptyState: {
     alignItems: "center",
