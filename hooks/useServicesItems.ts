@@ -42,6 +42,8 @@ export const useServicesItems = () => {
   useEffect(() => {
     const loadItems = async () => {
       try {
+        await new Promise((resolve) => setTimeout(resolve, 20000));
+
         const data = MOCK_SERVICES;
         setItems(data);
       } catch (err) {

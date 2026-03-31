@@ -1,7 +1,7 @@
 import { Maintenance } from "@/types/Maintenance";
 import { useEffect, useState } from "react";
 
-export const MOCK_MAINTENANCE = [
+const MOCK_MAINTENANCE = [
   {
     id: 1,
     bikeId: 1,
@@ -9,6 +9,7 @@ export const MOCK_MAINTENANCE = [
     mileage: 12000,
     date: "2026-01-10",
     cost: 30000,
+    note: "First ONE!!!!!",
   },
   {
     id: 2,
@@ -17,6 +18,7 @@ export const MOCK_MAINTENANCE = [
     mileage: 14000,
     date: "2026-02-15",
     cost: 8000,
+    note: "getting a hands on the bike",
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ export const MOCK_MAINTENANCE = [
     mileage: 10000,
     date: "2025-12-01",
     cost: 25000,
+    note: "Extreamly long note to see how will the UI break if someone desides to write the full harry potter saga in a note. So this shouldn't be visible until you can enter the maintenance and edit stuff",
   },
 
   {
@@ -87,15 +90,27 @@ export const MOCK_MAINTENANCE = [
   },
 ];
 
-export const useMaintenance = (bikeId?: number) => {
-  const [maintenance, setMaintenance] = useState<Maintenance[]>([]);
+export const useMaintenance = () => {
+  const [items, setItems] = useState<Maintenance[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!bikeId) return;
+    const loadItems = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 20000));
 
-    const data = MOCK_MAINTENANCE.filter((m) => m.bikeId === bikeId);
-    setMaintenance(data);
-  }, [bikeId]);
+      try {
+        const data = MOCK_MAINTENANCE;
+        setItems(data);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return { maintenance };
+    loadItems();
+  }, []);
+
+  return { items, loading, error };
 };
