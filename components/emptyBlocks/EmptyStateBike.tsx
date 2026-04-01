@@ -1,3 +1,4 @@
+import { Link } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function EmptyStateBike() {
@@ -8,10 +9,11 @@ export default function EmptyStateBike() {
       <Text style={styles.subtitle}>
         Agregá tu primera moto para empezar a llevar el control de mantenimiento
       </Text>
-
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Registrar mi moto</Text>
-      </TouchableOpacity>
+      <Link href="/newBikeModal" asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Registrar mi moto</Text>
+        </TouchableOpacity>
+      </Link>
     </View>
   );
 }
