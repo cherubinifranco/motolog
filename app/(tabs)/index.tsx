@@ -1,7 +1,9 @@
 import AppBanner from "@/components/AppBanner";
 import BikeSelector from "@/components/BikeSelector";
 import CurrentKm from "@/components/CurrentKm";
+import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
 import ImageBanner from "@/components/ImageBanner";
+import { useBikeContext } from "@/context/BikeContext";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
@@ -16,25 +18,33 @@ import ServicesScreen from "../../components/Services";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const { selectedBike } = useBikeContext();
+
   return (
     <View style={{ flex: 1, paddingTop: insets.top }}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <AppBanner />
 
-        <BikeSelector />
+        {selectedBike ? (
+          <View>
+            <BikeSelector />
 
-        <ImageBanner />
+            <ImageBanner />
 
-        <CurrentKm />
+            <CurrentKm />
 
-        <Text style={styles.sectionTitle}>Estado de mantenimientos</Text>
+            <Text style={styles.sectionTitle}>Estado de mantenimientos</Text>
 
-        <ServicesScreen />
+            <ServicesScreen />
 
-        <TouchableOpacity style={styles.bigButton}>
-          <Ionicons name="add" size={24} color="#FFF" />
-          <Text style={styles.bigButtonText}>Registrar mantenimiento</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.bigButton}>
+              <Ionicons name="add" size={24} color="#FFF" />
+              <Text style={styles.bigButtonText}>Registrar mantenimiento</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <EmptyStateBike />
+        )}
       </ScrollView>
     </View>
   );

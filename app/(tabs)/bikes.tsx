@@ -1,6 +1,7 @@
 // app/(tabs)/mi-moto.tsx
 import BikeSelector from "@/components/BikeSelector";
 import ServicesBlockToConfig from "@/components/editable/ServicesBlockToConfig";
+import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
 import ImageBanner from "@/components/ImageBanner";
 import { useBikeContext } from "@/context/BikeContext";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,6 +20,7 @@ export default function MiMotoScreen() {
   const { selectedBike } = useBikeContext();
   const insets = useSafeAreaInsets();
 
+  if (!selectedBike) return <EmptyStateBike />;
   return (
     <View
       style={{

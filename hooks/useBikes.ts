@@ -1,6 +1,8 @@
 import { Bike } from "@/types/Bike";
 import { useEffect, useState } from "react";
 
+const MOCK_BIKES2: Bike[] = [];
+
 const MOCK_BIKES: Bike[] = [
   {
     id: 1,
@@ -23,7 +25,7 @@ export const useBikes = () => {
     const loadItems = async () => {
       try {
         await new Promise((res) => setTimeout(res, 500));
-        setBikes(MOCK_BIKES);
+        setBikes(MOCK_BIKES2);
       } catch (err) {
         setError(err as Error);
       } finally {
