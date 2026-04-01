@@ -1,4 +1,5 @@
 // app/(tabs)/perfil.tsx
+import ExternalLink from "@/components/ui/ExternalLink";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
@@ -20,7 +21,6 @@ export default function PerfilScreen() {
   return (
     <View style={{ flex: 1, paddingTop: insets.top }}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header con foto de perfil */}
         <View style={styles.profileHeader}>
           <View style={styles.avatarContainer}>
             <Image
@@ -39,33 +39,10 @@ export default function PerfilScreen() {
           <Text style={styles.userMoto}>Honda CBR 600 RR • 15.234 km</Text>
         </View>
 
-        {/* Estadísticas rápidas */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>8</Text>
-            <Text style={styles.statLabel}>Mantenimientos</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>$145k</Text>
-            <Text style={styles.statLabel}>Gastado 2026</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>4.500</Text>
-            <Text style={styles.statLabel}>km este año</Text>
-          </View>
-        </View>
-
-        {/* Opciones del perfil */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Configuración</Text>
 
-          <TouchableOpacity style={styles.optionItem}>
-            <View style={styles.optionLeft}>
-              <Ionicons name="bicycle" size={24} color="#FF6200" />
-              <Text style={styles.optionText}>Mis motos</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
+          <ExternalLink href="../bikes" icon="bicycle" text="Mis Motos" />
 
           <TouchableOpacity style={styles.optionItem}>
             <View style={styles.optionLeft}>
@@ -90,46 +67,29 @@ export default function PerfilScreen() {
               trackColor={{ false: "#DDD", true: "#FF6200" }}
             />
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionItem}>
-            <View style={styles.optionLeft}>
-              <Ionicons name="cash" size={24} color="#FF6200" />
-              <Text style={styles.optionText}>Moneda y unidades</Text>
-            </View>
-            <Text style={styles.optionValue}>ARS • km</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>App</Text>
 
-          <TouchableOpacity style={styles.optionItem}>
-            <View style={styles.optionLeft}>
-              <Ionicons name="information-circle" size={24} color="#FF6200" />
-              <Text style={styles.optionText}>Acerca de MotoLog</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionItem}>
-            <View style={styles.optionLeft}>
-              <Ionicons name="star" size={24} color="#FF6200" />
-              <Text style={styles.optionText}>Calificar la app</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionItem}>
-            <View style={styles.optionLeft}>
-              <Ionicons name="share-social" size={24} color="#FF6200" />
-              <Text style={styles.optionText}>Compartir con amigos</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
+          <ExternalLink
+            href="../bikes"
+            icon="information-circle"
+            text="Acerca de MotoLog"
+          />
+          <ExternalLink href="../bikes" icon="star" text="Calificar la app" />
+          <ExternalLink
+            href="../bikes"
+            icon="share-social"
+            text="Compartir con amigos"
+          />
+          <ExternalLink
+            href="../bikes"
+            icon="alert"
+            text="Reportar un problema"
+          />
         </View>
 
-        {/* Botón de cerrar sesión */}
         <TouchableOpacity style={styles.logoutButton}>
           <Ionicons name="log-out-outline" size={22} color="#EF4444" />
           <Text style={styles.logoutText}>Cerrar sesión</Text>
@@ -193,35 +153,6 @@ const styles = StyleSheet.create({
     color: "#FF6200",
     fontWeight: "600",
     marginTop: 6,
-  },
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 32,
-    gap: 12,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: "#FFF",
-    padding: 16,
-    borderRadius: 16,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#111",
-  },
-  statLabel: {
-    fontSize: 13,
-    color: "#666",
-    marginTop: 4,
-    textAlign: "center",
   },
   section: {
     marginBottom: 28,
