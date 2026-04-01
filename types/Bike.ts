@@ -5,3 +5,9 @@ export type Bike = {
   year: string;
   currentKm: number;
 };
+
+export type NewBike = Omit<Bike, "id">;
+
+export type UpdateBike = Partial<Omit<Bike, "id">> & {
+  id: number;
+};

@@ -6,3 +6,9 @@ export type Service = {
   title: string;
   icon: React.ComponentProps<typeof Ionicons>["name"];
 };
+
+export type NewService = Omit<Service, "id">;
+
+export type UpdateService = Partial<Omit<Service, "id">> & {
+  id: number;
+};
