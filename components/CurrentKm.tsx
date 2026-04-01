@@ -1,23 +1,44 @@
+import UpdateKmPanel from "@/components/inputs/UpdateKmPanel";
 import { useBikeContext } from "@/context/BikeContext";
+import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function CurrentKm() {
   const { selectedBike } = useBikeContext();
+  const [showPanel, setShowPanel] = useState<boolean>(false);
 
   if (!selectedBike) return null;
 
+  const handleSave = (newKm: number) => {
+    console.log("Nuevo KM:", newKm);
+    setShowPanel(false);
+  };
+
   return (
-    <View style={styles.kmCard}>
-      <View style={styles.kmRow}>
-        <View>
-          <Text style={styles.kmLabel}>Kilometraje actual</Text>
-          <Text style={styles.kmValue}>{selectedBike.currentKm}</Text>
+    <>
+      <View style={styles.kmCard}>
+        <View style={styles.kmRow}>
+          <View>
+            <Text style={styles.kmLabel}>Kilometraje actual</Text>
+            <Text style={styles.kmValue}>{selectedBike.currentKm}</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.actualizarButton}
+            onPress={() => setShowPanel(true)}
+          >
+            <Text style={styles.actualizarText}>Actualizar</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.actualizarButton}>
-          <Text style={styles.actualizarText}>Actualizar</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+
+      <UpdateKmPanel
+        visible={showPanel}
+        currentKm={selectedBike.currentKm}
+        onClose={() => setShowPanel(false)}
+        onSave={handleSave}
+      />
+    </>
   );
 }
 
