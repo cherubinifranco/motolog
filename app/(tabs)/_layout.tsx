@@ -57,21 +57,6 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="bikes"
-        options={{
-          title: "Mis Motos",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "bicycle" : "bicycle-outline"}
-              size={24}
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name="history"
         options={{
           title: "Historial",

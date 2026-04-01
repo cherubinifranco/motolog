@@ -53,6 +53,14 @@ function RootLayoutNav() {
       <BikeProvider>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="newBikeModal"
+            options={{ title: "Registrar nueva moto", presentation: "modal" }}
+          />
+          <Stack.Screen
+            name="bikes"
+            options={{ title: "Mis Motos", presentation: "modal" }}
+          />
         </Stack>
       </BikeProvider>
     </ThemeProvider>
