@@ -1,51 +1,29 @@
-import { NewBike, UpdateBike } from "@/types/Bike";
-import { db } from "../db";
+import { Bike, NewBike } from "@/types/Bike";
 
-export const getBikes = async () => {
-  return await db.getAllAsync("SELECT * FROM bikes");
-};
+export const createBikeRepository = (db: any) => ({
+  getBikes: async (): Promise<Bike[]> => {
+    return await db.getAllAsync("SELECT * FROM bikes");
+  },
 
-export const createBike = async (bike: NewBike) => {
-  return await db.runAsync(
-    `INSERT INTO bikes (brand, model, year, currentKm)
-     VALUES (?, ?, ?, ?)`,
-    [bike.brand, bike.model, bike.year, bike.currentKm],
-  );
-};
+  createBike: async (bike: NewBike) => {
+    return await db.runAsync(
+      `INSERT INTO bikes (brand, model, year, currentKm)
+       VALUES (?, ?, ?, ?)`,
+      [bike.brand, bike.model, bike.year, bike.currentKm],
+    );
+  },
 
-export const updateBike = async (bike: UpdateBike) => {
-  const acceptedFields = ["brand", "model", "year", "currentKm"] as const;
+  updateBike: async (id: number, fields: string[], values: any[]) => {
+    const query = `
+      UPDATE bikes
+      SET ${fields.join(", ")}
+      WHERE id = ?
+    `;
 
-  const fields: string[] = [];
-  const values: any[] = [];
+    return await db.runAsync(query, [...values, id]);
+  },
 
-  for (const field of acceptedFields) {
-    const value = bike[field];
-    if (value !== undefined) {
-      fields.push(`${field} = ?`);
-      values.push(value);
-    }
-  }
-
-  if (fields.length === 0) {
-    throw new Error("No fields to update");
-  }
-
-  values.push(bike.id);
-
-  const query = `
-    UPDATE bikes
-    SET ${fields.join(", ")}
-    WHERE id = ?
-  `;
-
-  return await db.runAsync(query, values);
-};
-
-export const deleteBike = async (id: number) => {
-  const query = `
-        DELETE FROM bikes
-        WHERE id = ?`;
-
-  return await db.runAsync(query, [id]);
-};
+  deleteBike: async (id: number) => {
+    return await db.runAsync(`DELETE FROM bikes WHERE id = ?`, [id]);
+  },
+});

@@ -1,4 +1,5 @@
 import ImagePickerComponent from "@/components/ImagePickerComponent";
+import { useBikeContext } from "@/context/BikeContext";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -19,7 +20,9 @@ export default function NewBikeModal() {
   const [currentKm, setCurrentKm] = useState("");
   const router = useRouter();
 
-  const handleSave = () => {
+  const { createBike } = useBikeContext();
+
+  const handleSave = async () => {
     const parsedYear = Number(year);
     const parsedKm = Number(currentKm) || 0;
 
@@ -29,7 +32,7 @@ export default function NewBikeModal() {
     }
 
     console.log({ brand, model, year: parsedYear, currentKm: parsedKm });
-
+    await createBike({ brand, model, year: parsedYear, currentKm: parsedKm });
     router.back();
   };
 
@@ -94,7 +97,8 @@ export default function NewBikeModal() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
+    padding: 16,
+    paddingBottom: 400,
   },
   label: {
     fontSize: 16,

@@ -1,5 +1,4 @@
-import { useBikes } from "@/hooks/useBikes";
-import { Bike } from "@/types/Bike";
+import { Bike, NewBike, UpdateBike } from "@/types/Bike";
 import {
   createContext,
   ReactNode,
@@ -8,17 +7,95 @@ import {
   useState,
 } from "react";
 
+import { useBikeService } from "@/hooks/useBikeService";
+
 type BikeContextType = {
   bikes: Bike[];
   selectedBike: Bike | null;
   setSelectedBike: (bike: Bike) => void;
+
+  loading: boolean;
+  error: Error | null;
+
+  loadBikes: () => Promise<void>;
+  createBike: (bike: NewBike) => Promise<void>;
+  updateBike: (bike: UpdateBike) => Promise<void>;
+  deleteBike: (id: number) => Promise<void>;
 };
 
 const BikeContext = createContext<BikeContextType | undefined>(undefined);
 
 export const BikeProvider = ({ children }: { children: ReactNode }) => {
-  const { bikes } = useBikes();
+  const {
+    getBikes,
+    createBike: createBikeService,
+    updateBike: updateBikeService,
+    deleteBike: deleteBikeService,
+  } = useBikeService();
+
+  const [bikes, setBikes] = useState<Bike[]>([]);
   const [selectedBike, setSelectedBike] = useState<Bike | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const loadBikes = async () => {
+    try {
+      setLoading(true);
+      const data = await getBikes();
+      setBikes(data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createBike = async (bike: NewBike) => {
+    try {
+      const newBike = await createBikeService(bike);
+
+      setBikes((prev) => [...prev, newBike]);
+      setSelectedBike(newBike);
+    } catch (err) {
+      setError(err as Error);
+    }
+  };
+
+  const updateBike = async (bike: UpdateBike) => {
+    try {
+      await updateBikeService(bike);
+
+      setBikes((prev) =>
+        prev.map((b) => (b.id === bike.id ? { ...b, ...bike } : b)),
+      );
+      setSelectedBike((prev) =>
+        prev && prev.id === bike.id ? { ...prev, ...bike } : prev,
+      );
+    } catch (err) {
+      setError(err as Error);
+    }
+  };
+
+  const deleteBike = async (id: number) => {
+    try {
+      await deleteBikeService(id);
+
+      setBikes((prev) => prev.filter((b) => b.id !== id));
+
+      setSelectedBike((prev) => {
+        if (!prev) return null;
+        if (prev.id !== id) return prev;
+
+        return bikes.length > 1 ? bikes.find((b) => b.id !== id) || null : null;
+      });
+    } catch (err) {
+      setError(err as Error);
+    }
+  };
+
+  useEffect(() => {
+    loadBikes();
+  }, []);
 
   useEffect(() => {
     if (bikes.length > 0 && !selectedBike) {
@@ -27,7 +104,19 @@ export const BikeProvider = ({ children }: { children: ReactNode }) => {
   }, [bikes]);
 
   return (
-    <BikeContext.Provider value={{ bikes, selectedBike, setSelectedBike }}>
+    <BikeContext.Provider
+      value={{
+        bikes,
+        selectedBike,
+        setSelectedBike,
+        loading,
+        error,
+        loadBikes,
+        createBike,
+        updateBike,
+        deleteBike,
+      }}
+    >
       {children}
     </BikeContext.Provider>
   );
@@ -35,7 +124,8 @@ export const BikeProvider = ({ children }: { children: ReactNode }) => {
 
 export const useBikeContext = () => {
   const context = useContext(BikeContext);
-  if (!context)
+  if (!context) {
     throw new Error("useBikeContext must be used inside BikeProvider");
+  }
   return context;
 };

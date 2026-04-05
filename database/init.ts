@@ -1,6 +1,5 @@
-import { db } from "./db";
 import { runMigrations } from "./migrations";
 
-export async function initDatabase() {
+export async function initDatabase(db: any) {
   await runMigrations(db);
 }

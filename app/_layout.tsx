@@ -10,15 +10,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
+import { initDatabase } from "@/database/init";
+
 import { BikeProvider } from "@/context/BikeContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { SQLiteProvider } from "expo-sqlite";
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary
-} from "expo-router";
+export { ErrorBoundary } from "expo-router";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -27,7 +26,6 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
@@ -49,20 +47,32 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <BikeProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="newBikeModal"
-            options={{ title: "Registrar nueva moto", presentation: "modal" }}
-          />
-          <Stack.Screen
-            name="bikes"
-            options={{ title: "Mis Motos", presentation: "modal" }}
-          />
-        </Stack>
-      </BikeProvider>
-    </ThemeProvider>
+    <SQLiteProvider databaseName="motolog.db" onInit={initDatabase}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <BikeProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="newBikeModal"
+              options={{ title: "Registrar nueva moto", presentation: "modal" }}
+            />
+            <Stack.Screen
+              name="bikedetail"
+              options={{
+                title: "",
+                presentation: "modal",
+              }}
+            />
+            <Stack.Screen
+              name="mybikes"
+              options={{
+                title: "Mis Motos",
+                presentation: "modal",
+              }}
+            />
+          </Stack>
+        </BikeProvider>
+      </ThemeProvider>
+    </SQLiteProvider>
   );
 }
