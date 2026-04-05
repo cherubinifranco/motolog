@@ -29,7 +29,7 @@ export default function BikeSelector() {
         <View style={styles.dropdown}>
           {bikes.map((bike) => (
             <TouchableOpacity
-              key={bike.id}
+              key={bike.id + "bikeselector"}
               style={styles.bikeItem}
               onPress={() => handleSelect(bike)}
             >

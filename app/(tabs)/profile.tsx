@@ -1,5 +1,6 @@
 // app/(tabs)/perfil.tsx
 import ExternalLink from "@/components/ui/ExternalLink";
+import { BASIC } from "@/styles/basicStyles";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
@@ -42,9 +43,9 @@ export default function PerfilScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Configuración</Text>
 
-          <ExternalLink href="../bikes" icon="bicycle" text="Mis Motos" />
+          <ExternalLink href="../mybikes" icon="bicycle" text="Mis Motos" />
 
-          <TouchableOpacity style={styles.optionItem}>
+          <TouchableOpacity style={[BASIC.littleShadow, styles.optionItem]}>
             <View style={styles.optionLeft}>
               <Ionicons name="calendar" size={24} color="#FF6200" />
               <Text style={styles.optionText}>Recordatorios</Text>
@@ -56,7 +57,7 @@ export default function PerfilScreen() {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.optionItem}>
+          <TouchableOpacity style={[BASIC.littleShadow, styles.optionItem]}>
             <View style={styles.optionLeft}>
               <Ionicons name="notifications" size={24} color="#FF6200" />
               <Text style={styles.optionText}>Notificaciones push</Text>
@@ -171,11 +172,6 @@ const styles = StyleSheet.create({
     padding: 18,
     borderRadius: 16,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
   },
   optionLeft: {
     flexDirection: "row",

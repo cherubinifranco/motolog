@@ -1,8 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-  View
-} from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 export default function ImageBanner() {
   return (
@@ -24,7 +20,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     marginBottom: 24,
-    position: "relative",
     backgroundColor: "#EEE",
   },
   motoImage: {
