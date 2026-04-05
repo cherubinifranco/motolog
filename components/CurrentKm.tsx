@@ -4,13 +4,14 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function CurrentKm() {
-  const { selectedBike } = useBikeContext();
+  const { selectedBike, updateBike } = useBikeContext();
   const [showPanel, setShowPanel] = useState<boolean>(false);
 
   if (!selectedBike) return null;
 
   const handleSave = (newKm: number) => {
     console.log("Nuevo KM:", newKm);
+    updateBike({ currentKm: newKm, id: selectedBike.id });
     setShowPanel(false);
   };
 
