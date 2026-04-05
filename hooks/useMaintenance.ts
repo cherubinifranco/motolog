@@ -97,7 +97,7 @@ export const useMaintenance = () => {
 
   useEffect(() => {
     const loadItems = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 20000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       try {
         const data = MOCK_MAINTENANCE;

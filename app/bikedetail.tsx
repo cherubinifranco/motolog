@@ -1,5 +1,5 @@
-// app/(tabs)/mi-moto.tsx
 import BikeSelector from "@/components/BikeSelector";
+import CurrentKm from "@/components/CurrentKm";
 import ServicesBlockToConfig from "@/components/editable/ServicesBlockToConfig";
 import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
 import ImageBanner from "@/components/ImageBanner";
@@ -14,18 +14,14 @@ import {
   View,
 } from "react-native";
 
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 export default function MiMotoScreen() {
   const { selectedBike } = useBikeContext();
-  const insets = useSafeAreaInsets();
 
   if (!selectedBike) return <EmptyStateBike />;
   return (
     <View
       style={{
         flex: 1,
-        paddingTop: insets.top,
       }}
     >
       <View style={{ paddingHorizontal: 16 }}>
@@ -33,12 +29,7 @@ export default function MiMotoScreen() {
       </View>
       {selectedBike && (
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          <View style={styles.imageContainer}>
-            <ImageBanner />
-            <TouchableOpacity style={styles.editImageButton}>
-              <Ionicons name="camera" size={20} color="#FFF" />
-            </TouchableOpacity>
-          </View>
+          <ImageBanner />
 
           <View style={styles.infoGrid}>
             <View style={styles.infoCard}>
@@ -55,14 +46,25 @@ export default function MiMotoScreen() {
             </View>
           </View>
 
+          <CurrentKm />
+
           <ServicesBlockToConfig />
 
           <TouchableOpacity style={styles.editarMotoButton}>
-            <Ionicons name="create-outline" size={20} color="#FFF" />
-            <Text style={styles.editarMotoText}>
-              Editar información de la moto
-            </Text>
+            <Ionicons
+              name="ellipsis-horizontal-circle-sharp"
+              size={20}
+              color="#FFF"
+            />
+            <Text style={styles.editarMotoText}>Editar información</Text>
           </TouchableOpacity>
+
+          <View style={styles.dangerZone}>
+            <TouchableOpacity style={styles.dangerButton}>
+              <Ionicons name="close-circle" size={20} color="#FFF" />
+              <Text style={styles.editarMotoText}>Eliminar moto</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       )}
     </View>
@@ -78,14 +80,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 24,
   },
-  header: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#111",
-  },
+
   imageContainer: {
     height: 220,
     borderRadius: 20,
@@ -142,89 +137,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#111",
   },
-  serviceCard: {
-    backgroundColor: "#FFF",
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 24,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#111",
-    marginBottom: 16,
-    alignSelf: "flex-start",
-  },
-  progressContainer: {
-    alignItems: "center",
-    marginVertical: 12,
-  },
-  progressCircle: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: "#FFF",
-    borderWidth: 12,
-    borderColor: "#FF6200",
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#FF6200",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-  },
-  progressPercentage: {
-    fontSize: 36,
-    fontWeight: "700",
-    color: "#FF6200",
-  },
-  progressTarget: {
-    fontSize: 18,
-    color: "#444",
-    marginTop: 4,
-  },
-  serviceSubtitle: {
-    fontSize: 15,
-    color: "#555",
-    textAlign: "center",
-    marginTop: 8,
-  },
-  intervalosContainer: {
-    marginBottom: 30,
-  },
-  intervaloItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  intervaloLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  intervaloTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  intervaloSubtitle: {
-    fontSize: 14,
-    color: "#666",
-  },
   editarMotoButton: {
     backgroundColor: "#FF6200",
     flexDirection: "row",
@@ -233,11 +145,26 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 16,
     borderRadius: 16,
-    marginBottom: 40,
+    marginBottom: 10,
+    marginTop: 30,
   },
   editarMotoText: {
     color: "#FFF",
     fontSize: 17,
     fontWeight: "600",
+  },
+  dangerZone: {
+    paddingVertical: 10,
+    borderTopColor: "rgb(255, 65, 65)",
+    borderTopWidth: 2,
+  },
+  dangerButton: {
+    backgroundColor: "rgb(255, 65, 65)",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingVertical: 16,
+    borderRadius: 16,
   },
 });
