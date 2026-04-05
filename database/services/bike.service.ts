@@ -16,7 +16,7 @@ export const createBikeService = (repository: any) => ({
       throw new Error("El modelo es requerido");
     }
 
-    if (bike.year < 1900) {
+    if (bike.year < 1) {
       throw new Error("Año inválido");
     }
 

@@ -29,7 +29,7 @@ export default function HomeScreen() {
           <View>
             <BikeSelector />
 
-            <ImageBanner />
+            <ImageBanner imageUri={selectedBike.imageUri} />
 
             <CurrentKm />
 

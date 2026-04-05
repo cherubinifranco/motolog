@@ -8,7 +8,8 @@ export const runMigrations = async (db: any) => {
     brand TEXT NOT NULL, 
     model TEXT NOT NULL, 
     year INTEGER NOT NULL, 
-    currentKm INTEGER DEFAULT 0
+    currentKm INTEGER DEFAULT 0,
+    imageUri TEXT
   );
 
     CREATE TABLE IF NOT EXISTS services (

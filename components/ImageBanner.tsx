@@ -1,15 +1,39 @@
+import { BASIC } from "@/styles/basicStyles";
+import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, View } from "react-native";
 
-export default function ImageBanner() {
+export default function ImageBanner({
+  imageUri,
+  style = styles.imageContainer,
+}: {
+  imageUri: string | undefined;
+  style?: any;
+}) {
   return (
-    <View style={styles.imageContainer}>
-      <Image
-        source={{
-          uri: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2070&auto=format&fit=crop", // Honda CBR roja (puedes cambiarla)
-        }}
-        style={styles.motoImage}
-        resizeMode="cover"
-      />
+    <View style={style}>
+      {imageUri ? (
+        <Image
+          source={{ uri: imageUri }}
+          style={[styles.motoImage, style]}
+          resizeMode="cover"
+        />
+      ) : (
+        <View
+          style={[
+            {
+              backgroundColor: "#f7f7f7",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            },
+            ,
+            BASIC.littleShadow,
+            style,
+          ]}
+        >
+          <Ionicons name="camera-outline" size={40} color={"#727272"} />
+        </View>
+      )}
     </View>
   );
 }

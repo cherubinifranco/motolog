@@ -1,5 +1,6 @@
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { useBikeContext } from "@/context/BikeContext";
+import { saveImageLocally } from "@/utils/saveImageLocally";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -18,6 +19,7 @@ export default function NewBikeModal() {
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
   const [currentKm, setCurrentKm] = useState("");
+  const [image, setImage] = useState("");
   const router = useRouter();
 
   const { createBike } = useBikeContext();
@@ -31,13 +33,21 @@ export default function NewBikeModal() {
       return;
     }
 
-    console.log({ brand, model, year: parsedYear, currentKm: parsedKm });
-    await createBike({ brand, model, year: parsedYear, currentKm: parsedKm });
+    const parsedImage = await saveImageLocally(image);
+
+    await createBike({
+      brand,
+      model,
+      year: parsedYear,
+      currentKm: parsedKm,
+      imageUri: parsedImage,
+    });
+
     router.back();
   };
 
   function onSelectImage(uri: string) {
-    console.log(uri);
+    setImage(uri);
   }
 
   return (

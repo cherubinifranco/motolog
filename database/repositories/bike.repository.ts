@@ -7,9 +7,9 @@ export const createBikeRepository = (db: any) => ({
 
   createBike: async (bike: NewBike) => {
     return await db.runAsync(
-      `INSERT INTO bikes (brand, model, year, currentKm)
-       VALUES (?, ?, ?, ?)`,
-      [bike.brand, bike.model, bike.year, bike.currentKm],
+      `INSERT INTO bikes (brand, model, year, currentKm, imageUri)
+       VALUES (?, ?, ?, ?, ?)`,
+      [bike.brand, bike.model, bike.year, bike.currentKm, bike.imageUri],
     );
   },
 

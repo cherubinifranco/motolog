@@ -4,6 +4,7 @@ export type Bike = {
   model: string;
   year: number;
   currentKm: number;
+  imageUri?: string;
 };
 
 export type NewBike = Omit<Bike, "id">;

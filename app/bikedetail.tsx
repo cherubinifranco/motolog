@@ -6,6 +6,7 @@ import ImageBanner from "@/components/ImageBanner";
 import ConfirmActionPopup from "@/components/inputs/ConfirmActionPopup";
 import { useBikeContext } from "@/context/BikeContext";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -24,6 +25,7 @@ export default function MiMotoScreen() {
     if (selectedBike == null) return;
     deleteBike(selectedBike.id);
     setTryDelete(false);
+    router.back();
   }
 
   if (!selectedBike) return <EmptyStateBike />;
@@ -47,7 +49,7 @@ export default function MiMotoScreen() {
       />
       {selectedBike && (
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          <ImageBanner />
+          <ImageBanner imageUri={selectedBike.imageUri} />
 
           <View style={styles.infoGrid}>
             <View style={styles.infoCard}>

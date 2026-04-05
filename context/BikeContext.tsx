@@ -18,7 +18,7 @@ type BikeContextType = {
   error: Error | null;
 
   loadBikes: () => Promise<void>;
-  createBike: (bike: NewBike) => Promise<void>;
+  createBike: (bike: NewBike) => Promise<number>;
   updateBike: (bike: UpdateBike) => Promise<void>;
   deleteBike: (id: number) => Promise<void>;
 };
@@ -56,7 +56,9 @@ export const BikeProvider = ({ children }: { children: ReactNode }) => {
 
       setBikes((prev) => [...prev, newBike]);
       setSelectedBike(newBike);
+      return newBike.id;
     } catch (err) {
+      console.log(err);
       setError(err as Error);
     }
   };
