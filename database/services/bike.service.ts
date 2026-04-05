@@ -55,7 +55,6 @@ export const createBikeService = (repository: any) => ({
     return repository.updateBike(bike.id, fields, values);
   },
 
-  // 🗑 DELETE
   deleteBike: async (id: number) => {
     if (!id) {
       throw new Error("ID requerido");

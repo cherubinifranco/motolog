@@ -1,4 +1,3 @@
-// app/(tabs)/perfil.tsx
 import ExternalLink from "@/components/ui/ExternalLink";
 import { BASIC } from "@/styles/basicStyles";
 import { Ionicons } from "@expo/vector-icons";
