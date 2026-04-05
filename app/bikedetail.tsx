@@ -3,9 +3,10 @@ import CurrentKm from "@/components/CurrentKm";
 import ServicesBlockToConfig from "@/components/editable/ServicesBlockToConfig";
 import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
 import ImageBanner from "@/components/ImageBanner";
+import ConfirmActionPopup from "@/components/inputs/ConfirmActionPopup";
 import { useBikeContext } from "@/context/BikeContext";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -15,9 +16,18 @@ import {
 } from "react-native";
 
 export default function MiMotoScreen() {
-  const { selectedBike } = useBikeContext();
+  const { selectedBike, deleteBike } = useBikeContext();
+
+  const [tryDelete, setTryDelete] = useState(false);
+
+  function handleDelete() {
+    if (selectedBike == null) return;
+    deleteBike(selectedBike.id);
+    setTryDelete(false);
+  }
 
   if (!selectedBike) return <EmptyStateBike />;
+
   return (
     <View
       style={{
@@ -27,6 +37,14 @@ export default function MiMotoScreen() {
       <View style={{ paddingHorizontal: 16 }}>
         <BikeSelector />
       </View>
+      <ConfirmActionPopup
+        title="Confirmar eliminación"
+        message="Para eliminar esta moto, ingresa el siguiente código:"
+        confirmText="Eliminar"
+        visible={tryDelete}
+        onConfirm={handleDelete}
+        onCancel={() => setTryDelete(false)}
+      />
       {selectedBike && (
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <ImageBanner />
@@ -60,7 +78,10 @@ export default function MiMotoScreen() {
           </TouchableOpacity>
 
           <View style={styles.dangerZone}>
-            <TouchableOpacity style={styles.dangerButton}>
+            <TouchableOpacity
+              style={styles.dangerButton}
+              onPress={() => setTryDelete(true)}
+            >
               <Ionicons name="close-circle" size={20} color="#FFF" />
               <Text style={styles.editarMotoText}>Eliminar moto</Text>
             </TouchableOpacity>
