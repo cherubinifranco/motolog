@@ -1,3 +1,4 @@
+import { BASIC } from "@/styles/basicStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { ExternalPathString, Link, RelativePathString } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -6,50 +7,83 @@ type LinkType = {
   text: string;
   icon: React.ComponentProps<typeof Ionicons>["name"];
   href: ExternalPathString | RelativePathString;
+  variant?: "primary" | "secondary";
+  align?: "left" | "center";
+  arrow?: boolean;
 };
 
-export default function ExternalLink({ text, icon, href }: LinkType) {
+const ICON_COLOR = {
+  primary: "#ff7b28",
+  secondary: "#FFF",
+};
+
+export default function ExternalLink({
+  text,
+  icon,
+  href,
+  variant = "primary",
+  align = "center",
+  arrow = false,
+}: LinkType) {
   return (
-    <Link href={href} asChild>
-      <TouchableOpacity style={styles.optionItem}>
-        <View style={styles.optionLeft}>
-          <Ionicons name={icon} size={24} color="#FF6200" />
-          <Text style={styles.optionText}>{text}</Text>
+    <Link href={href} asChild style={BASIC.littleShadow}>
+      <TouchableOpacity style={styles[variant]}>
+        <View style={styles[align]}>
+          <Ionicons name={icon} size={24} color={ICON_COLOR[variant]} />
+          <Text style={textStyle[variant]}>{text}</Text>
         </View>
-        <Ionicons name="chevron-forward" size={20} color="#999" />
+        {arrow && align != "center" && (
+          <Ionicons
+            name="chevron-forward"
+            size={20}
+            color={ICON_COLOR[variant]}
+          />
+        )}
       </TouchableOpacity>
     </Link>
   );
 }
 
+const textStyle = StyleSheet.create({
+  primary: {
+    color: "#000",
+  },
+  secondary: {
+    color: "#FFF",
+  },
+});
+
 const styles = StyleSheet.create({
-  optionItem: {
-    flexDirection: "row",
-    alignItems: "center",
+  primary: {
     backgroundColor: "#FFF",
     padding: 18,
     borderRadius: 16,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  optionLeft: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  secondary: {
+    backgroundColor: "#ff7b28",
+    padding: 18,
+    borderRadius: 16,
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  left: {
+    width: "95%",
     gap: 16,
-    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
-  optionText: {
-    fontSize: 16,
-    color: "#111",
-    fontWeight: "500",
+  center: {
+    width: "100%",
+    gap: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  optionValue: {
-    fontSize: 15,
-    color: "#666",
-    marginRight: 8,
+  container: {
+    flexDirection: "row",
   },
 });
