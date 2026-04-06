@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type ButtonType = {
   text: string;
-  icon: React.ComponentProps<typeof Ionicons>["name"];
+  icon?: React.ComponentProps<typeof Ionicons>["name"];
   onPress: () => void;
   variant?: "primary" | "secondary";
 };
@@ -27,7 +27,7 @@ export default function ActionButton({
       activeOpacity={0.8}
     >
       <View style={styles.center}>
-        <Ionicons name={icon} size={24} color={ICON_COLOR[variant]} />
+        {icon && <Ionicons name={icon} size={24} color={ICON_COLOR[variant]} />}
         <Text style={textStyle[variant]}>{text}</Text>
       </View>
     </TouchableOpacity>
