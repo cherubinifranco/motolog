@@ -1,8 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
-  DarkTheme,
   DefaultTheme,
-  ThemeProvider,
+  ThemeProvider
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -13,6 +12,7 @@ import "react-native-reanimated";
 import { initDatabase } from "@/database/init";
 
 import { BikeProvider } from "@/context/BikeContext";
+import { ServiceProvider } from "@/context/ServiceContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SQLiteProvider } from "expo-sqlite";
 
@@ -48,29 +48,41 @@ function RootLayoutNav() {
 
   return (
     <SQLiteProvider databaseName="motolog.db" onInit={initDatabase}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={DefaultTheme}>
         <BikeProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="newBikeModal"
-              options={{ title: "Registrar nueva moto", presentation: "modal" }}
-            />
-            <Stack.Screen
-              name="bikedetail"
-              options={{
-                title: "",
-                presentation: "modal",
-              }}
-            />
-            <Stack.Screen
-              name="mybikes"
-              options={{
-                title: "Mis Motos",
-                presentation: "modal",
-              }}
-            />
-          </Stack>
+          <ServiceProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="newBikeModal"
+                options={{
+                  title: "Registrar nueva moto",
+                  presentation: "modal",
+                }}
+              />
+              <Stack.Screen
+                name="bikedetail"
+                options={{
+                  title: "",
+                  presentation: "modal",
+                }}
+              />
+              <Stack.Screen
+                name="mybikes"
+                options={{
+                  title: "Mis Motos",
+                  presentation: "modal",
+                }}
+              />
+              <Stack.Screen
+                name="myservices"
+                options={{
+                  title: "Mis Servicios",
+                  presentation: "modal",
+                }}
+              />
+            </Stack>
+          </ServiceProvider>
         </BikeProvider>
       </ThemeProvider>
     </SQLiteProvider>
