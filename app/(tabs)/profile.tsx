@@ -3,7 +3,6 @@ import { BASIC } from "@/styles/basicStyles";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Switch,
@@ -21,28 +20,25 @@ export default function PerfilScreen() {
   return (
     <View style={{ flex: 1, paddingTop: insets.top }}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.profileHeader}>
-          <View style={styles.avatarContainer}>
-            <Image
-              source={{
-                uri: "https://imgs.search.brave.com/mRjZDmMPk5-_x7xtn8yvEi81lFJUhFFw3EeJg_JYU20/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS50ZW5vci5jb20v/aS1zc3VjWDQ4UzRB/QUFBTS9taW5pb24t/c3RhcmUuZ2lm.gif",
-              }}
-              style={styles.avatar}
-            />
-            <TouchableOpacity style={styles.editAvatarButton}>
-              <Ionicons name="camera" size={18} color="#FFF" />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.userName}>Cheru</Text>
-          <Text style={styles.userEmail}>soy_cheru@gmail.com</Text>
-          <Text style={styles.userMoto}>Honda CBR 600 RR • 15.234 km</Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Mis Datos</Text>
+          <ExternalLink
+            href="../mybikes"
+            icon="bicycle"
+            text="Mis Motos"
+            align="left"
+            arrow={true}
+          />
+          <ExternalLink
+            href="../myservices"
+            icon="water-outline"
+            text="Servicios"
+            align="left"
+            arrow={true}
+          />
         </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Configuración</Text>
-
-          <ExternalLink href="../mybikes" icon="bicycle" text="Mis Motos" />
 
           <TouchableOpacity style={[BASIC.littleShadow, styles.optionItem]}>
             <View style={styles.optionLeft}>
@@ -89,11 +85,6 @@ export default function PerfilScreen() {
             text="Reportar un problema"
           />
         </View>
-
-        <TouchableOpacity style={styles.logoutButton}>
-          <Ionicons name="log-out-outline" size={22} color="#EF4444" />
-          <Text style={styles.logoutText}>Cerrar sesión</Text>
-        </TouchableOpacity>
 
         <Text style={styles.version}>Versión 1.0.0</Text>
       </ScrollView>

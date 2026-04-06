@@ -1,16 +1,9 @@
 import BikeItem from "@/components/BikeItem";
+import ExternalLink from "@/components/ui/ExternalLink";
 import { useBikeContext } from "@/context/BikeContext";
-import { Ionicons } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import React from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -36,12 +29,11 @@ export default function MiMotoScreen() {
         ))}
 
         <View style={{ paddingHorizontal: 16 }}>
-          <Link href="/newBikeModal" asChild>
-            <TouchableOpacity style={styles.editarMotoButton}>
-              <Ionicons name="add-circle" size={20} color="#FFF" />
-              <Text style={styles.editarMotoText}>Añadir otra moto</Text>
-            </TouchableOpacity>
-          </Link>
+          <ExternalLink
+            text="Añadir otra moto"
+            icon="add-circle-sharp"
+            href="../newBikeModal"
+          />
         </View>
       </View>
     </ScrollView>
