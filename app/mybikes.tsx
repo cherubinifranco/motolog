@@ -31,7 +31,7 @@ export default function MiMotoScreen() {
         <View style={{ paddingHorizontal: 16 }}>
           <ExternalLink
             text="Añadir otra moto"
-            icon="add-circle-sharp"
+            icon="add"
             href="../newBikeModal"
           />
         </View>
