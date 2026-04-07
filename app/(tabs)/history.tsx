@@ -1,10 +1,10 @@
+import SkeletonLoaderLogs from "@/components/emptyBlocks/SkeletonLoaderLogs";
 import LogItem from "@/components/LogItem";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useServicesItems } from "@/hooks/useServicesItems";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useMemo, useState } from "react";
 import {
-  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -149,7 +149,9 @@ export default function HistorialScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {filteredItems.length === 0 ? (
           loadingServices || loadingMaitenance ? (
-            <ActivityIndicator style={{ padding: 20 }} />
+            [1, 2, 3, 4, 5, 6, 7, 8].map((_, index) => (
+              <SkeletonLoaderLogs key={index} />
+            ))
           ) : (
             <View style={styles.emptyState}>
               <Ionicons name="document-text-outline" size={60} color="#CCC" />

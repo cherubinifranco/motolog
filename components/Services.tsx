@@ -1,5 +1,6 @@
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
 
+import SkeletonLoaderItem from "@/components/emptyBlocks/SkeletonLoaderItem";
 import { useBikeContext } from "@/context/BikeContext";
 import { useMaintenance } from "@/hooks/useMaintenance";
 import { useServicesItems } from "@/hooks/useServicesItems";
@@ -14,7 +15,8 @@ export default function ServicesScreen() {
     useMaintenance();
 
   if (selectedBike == null) return null;
-  if (loadingServices || loadingMaitenance) return <ActivityIndicator />;
+  if (loadingServices || loadingMaitenance)
+    return [1, 2, 3, 4, 5].map((index) => <SkeletonLoaderItem key={index} />);
 
   const bikeMaitenance = maintenanceitems.filter(
     (m) => m.bikeId == selectedBike.id,
