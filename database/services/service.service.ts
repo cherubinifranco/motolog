@@ -8,6 +8,7 @@ export const createServiceService = (repository: any) => ({
   },
 
   createService: async (service: NewService) => {
+    console.log("Create", service);
     if (!service.title) {
       throw new Error("El titulo es requerido");
     }

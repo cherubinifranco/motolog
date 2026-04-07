@@ -6,7 +6,7 @@ import ImageBanner from "@/components/ImageBanner";
 import ConfirmActionPopup from "@/components/inputs/ConfirmActionPopup";
 import { useBikeContext } from "@/context/BikeContext";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import React, { useState } from "react";
 import {
   ScrollView,
@@ -31,66 +31,70 @@ export default function MiMotoScreen() {
   if (!selectedBike) return <EmptyStateBike />;
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
-      <View style={{ paddingHorizontal: 16 }}>
-        <BikeSelector />
-      </View>
-      <ConfirmActionPopup
-        title="Confirmar eliminación"
-        message="Para eliminar esta moto, ingresa el siguiente código:"
-        confirmText="Eliminar"
-        visible={tryDelete}
-        onConfirm={handleDelete}
-        onCancel={() => setTryDelete(false)}
-      />
-      {selectedBike && (
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          <ImageBanner imageUri={selectedBike.imageUri} />
+    <>
+      <Stack.Screen options={{ title: "Detalles" }} />
 
-          <View style={styles.infoGrid}>
-            <View style={styles.infoCard}>
-              <Text style={styles.infoLabel}>Marca</Text>
-              <Text style={styles.infoValue}>{selectedBike.brand}</Text>
+      <View
+        style={{
+          flex: 1,
+        }}
+      >
+        <View style={{ paddingHorizontal: 16 }}>
+          <BikeSelector />
+        </View>
+        <ConfirmActionPopup
+          title="Confirmar eliminación"
+          message="Para eliminar esta moto, ingresa el siguiente código:"
+          confirmText="Eliminar"
+          visible={tryDelete}
+          onConfirm={handleDelete}
+          onCancel={() => setTryDelete(false)}
+        />
+        {selectedBike && (
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <ImageBanner imageUri={selectedBike.imageUri} />
+
+            <View style={styles.infoGrid}>
+              <View style={styles.infoCard}>
+                <Text style={styles.infoLabel}>Marca</Text>
+                <Text style={styles.infoValue}>{selectedBike.brand}</Text>
+              </View>
+              <View style={styles.infoCard}>
+                <Text style={styles.infoLabel}>Modelo</Text>
+                <Text style={styles.infoValue}>{selectedBike.model}</Text>
+              </View>
+              <View style={styles.infoCard}>
+                <Text style={styles.infoLabel}>Año</Text>
+                <Text style={styles.infoValue}>{selectedBike.year}</Text>
+              </View>
             </View>
-            <View style={styles.infoCard}>
-              <Text style={styles.infoLabel}>Modelo</Text>
-              <Text style={styles.infoValue}>{selectedBike.model}</Text>
-            </View>
-            <View style={styles.infoCard}>
-              <Text style={styles.infoLabel}>Año</Text>
-              <Text style={styles.infoValue}>{selectedBike.year}</Text>
-            </View>
-          </View>
 
-          <CurrentKm />
+            <CurrentKm />
 
-          <ServicesBlockToConfig />
+            <ServicesBlockToConfig />
 
-          <TouchableOpacity style={styles.editarMotoButton}>
-            <Ionicons
-              name="ellipsis-horizontal-circle-sharp"
-              size={20}
-              color="#FFF"
-            />
-            <Text style={styles.editarMotoText}>Editar información</Text>
-          </TouchableOpacity>
-
-          <View style={styles.dangerZone}>
-            <TouchableOpacity
-              style={styles.dangerButton}
-              onPress={() => setTryDelete(true)}
-            >
-              <Ionicons name="close-circle" size={20} color="#FFF" />
-              <Text style={styles.editarMotoText}>Eliminar moto</Text>
+            <TouchableOpacity style={styles.editarMotoButton}>
+              <Ionicons
+                name="ellipsis-horizontal-circle-sharp"
+                size={20}
+                color="#FFF"
+              />
+              <Text style={styles.editarMotoText}>Editar información</Text>
             </TouchableOpacity>
-          </View>
-        </ScrollView>
-      )}
-    </View>
+
+            <View style={styles.dangerZone}>
+              <TouchableOpacity
+                style={styles.dangerButton}
+                onPress={() => setTryDelete(true)}
+              >
+                <Ionicons name="close-circle" size={20} color="#FFF" />
+                <Text style={styles.editarMotoText}>Eliminar moto</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        )}
+      </View>
+    </>
   );
 }
 

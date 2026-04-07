@@ -1,7 +1,7 @@
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { useBikeContext } from "@/context/BikeContext";
 import { saveImageLocally } from "@/utils/saveImageLocally";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -51,57 +51,63 @@ export default function NewBikeModal() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: "#fff" }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.container}>
-        <ImagePickerComponent onImageSelected={onSelectImage} />
-        <Text style={styles.label}>Marca</Text>
-        <TextInput
-          style={styles.input}
-          value={brand}
-          onChangeText={setBrand}
-          placeholder="Ej: Yamaha"
-        />
+    <>
+      <Stack.Screen options={{ title: "Nueva Moto" }} />
+      <KeyboardAvoidingView
+        style={{ flex: 1, backgroundColor: "#fff" }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView contentContainerStyle={styles.container}>
+          <ImagePickerComponent onImageSelected={onSelectImage} />
+          <Text style={styles.label}>Marca</Text>
+          <TextInput
+            style={styles.input}
+            value={brand}
+            onChangeText={setBrand}
+            placeholder="Ej: Yamaha"
+          />
 
-        <Text style={styles.label}>Modelo</Text>
-        <TextInput
-          style={styles.input}
-          value={model}
-          onChangeText={setModel}
-          placeholder="Ej: R6"
-        />
+          <Text style={styles.label}>Modelo</Text>
+          <TextInput
+            style={styles.input}
+            value={model}
+            onChangeText={setModel}
+            placeholder="Ej: R6"
+          />
 
-        <Text style={styles.label}>Año</Text>
-        <TextInput
-          style={styles.input}
-          value={year}
-          onChangeText={setYear}
-          placeholder="Ej: 2021"
-          keyboardType="numeric"
-        />
+          <Text style={styles.label}>Año</Text>
+          <TextInput
+            style={styles.input}
+            value={year}
+            onChangeText={setYear}
+            placeholder="Ej: 2021"
+            keyboardType="numeric"
+          />
 
-        <Text style={styles.label}>Kilometraje inicial (opcional)</Text>
-        <TextInput
-          style={styles.input}
-          value={currentKm}
-          onChangeText={setCurrentKm}
-          placeholder="Ej: 12000"
-          keyboardType="numeric"
-        />
+          <Text style={styles.label}>Kilometraje inicial (opcional)</Text>
+          <TextInput
+            style={styles.input}
+            value={currentKm}
+            onChangeText={setCurrentKm}
+            placeholder="Ej: 12000"
+            keyboardType="numeric"
+          />
 
-        <View style={styles.buttons}>
-          <TouchableOpacity style={styles.cancel} onPress={() => router.back()}>
-            <Text>Cancelar</Text>
-          </TouchableOpacity>
+          <View style={styles.buttons}>
+            <TouchableOpacity
+              style={styles.cancel}
+              onPress={() => router.back()}
+            >
+              <Text>Cancelar</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.save} onPress={handleSave}>
-            <Text style={{ color: "#fff" }}>Guardar</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <TouchableOpacity style={styles.save} onPress={handleSave}>
+              <Text style={{ color: "#fff" }}>Guardar</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </>
   );
 }
 

@@ -1,8 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DefaultTheme,
-  ThemeProvider
-} from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -53,34 +50,6 @@ function RootLayoutNav() {
           <ServiceProvider>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="newBikeModal"
-                options={{
-                  title: "Registrar nueva moto",
-                  presentation: "modal",
-                }}
-              />
-              <Stack.Screen
-                name="bikedetail"
-                options={{
-                  title: "",
-                  presentation: "modal",
-                }}
-              />
-              <Stack.Screen
-                name="mybikes"
-                options={{
-                  title: "Mis Motos",
-                  presentation: "modal",
-                }}
-              />
-              <Stack.Screen
-                name="myservices"
-                options={{
-                  title: "Mis Servicios",
-                  presentation: "modal",
-                }}
-              />
             </Stack>
           </ServiceProvider>
         </BikeProvider>
