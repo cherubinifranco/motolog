@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type ItemProps = {
   icon: React.ComponentProps<typeof Ionicons>["name"];
   iconColor?: "green" | "blue" | "red" | "orange";
   title: string;
+  onPress: () => void;
   subtitle?: string;
 };
 
@@ -20,11 +21,12 @@ export function ItemWithIcon({
   iconColor = "blue",
   title = "title",
   subtitle = "",
+  onPress,
 }: ItemProps) {
   const color = COLORS[iconColor];
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.8} style={styles.card}>
       <View style={styles.cardRow}>
         <Ionicons name={icon} size={24} color={color} />
 
@@ -35,7 +37,7 @@ export function ItemWithIcon({
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
