@@ -1,6 +1,10 @@
 import { Bike, NewBike } from "@/types/Bike";
 
 export const createBikeRepository = (db: any) => ({
+  getBikeById: async (id: number) => {
+    return await db.getFirstAsync("SELECT * FROM bikes WHERE id = ?", [id]);
+  },
+
   getBikes: async (): Promise<Bike[]> => {
     return await db.getAllAsync("SELECT * FROM bikes");
   },

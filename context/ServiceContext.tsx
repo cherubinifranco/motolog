@@ -18,6 +18,10 @@ type ServiceContextType = {
   loading: boolean;
   error: Error | null;
 
+  selectedService: Service | null;
+  setSelectedService: (service: Service) => void;
+
+  getServiceById: (id: number) => Promise<Service>;
   getServices: () => Promise<Service[]>;
   getBikeServices: (selectedBike: Bike) => Promise<Service[]>;
   createService: (service: NewService) => Promise<number>;
@@ -34,10 +38,13 @@ export const ServiceProvider = ({ children }: { children: ReactNode }) => {
   const [selectedBikeServices, setSelectedBikeServices] = useState<Service[]>(
     [],
   );
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+
   const [services, setServices] = useState<Service[]>([]);
   const [error, setError] = useState<Error | null>(null);
 
   const {
+    getServiceById: getServiceByIdService,
     getServices: getServicesServices,
     createService: createServiceService,
     updateService: updateServiceService,
@@ -47,6 +54,11 @@ export const ServiceProvider = ({ children }: { children: ReactNode }) => {
   const getBikeServices = async (selectedBike: Bike) => {
     console.log("getBikeServices in serviceContext");
     return [];
+  };
+
+  const getServiceById = async (id: number) => {
+    const s = await getServiceByIdService(id);
+    return s;
   };
 
   const getServices = async () => {
@@ -110,10 +122,13 @@ export const ServiceProvider = ({ children }: { children: ReactNode }) => {
     <ServiceContext.Provider
       value={{
         services,
+        selectedService,
+        setSelectedService,
         selectedBikeServices,
         loading,
         error,
         getServices,
+        getServiceById,
         getBikeServices,
         createService,
         updateService,

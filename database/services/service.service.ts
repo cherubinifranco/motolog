@@ -1,14 +1,18 @@
 import { NewService, Service, UpdateService } from "@/types/Service";
 
-const acceptedFields = ["changeEvery", "title", "icon"] as const;
-
 export const createServiceService = (repository: any) => ({
+  getServiceById: async (id: number): Promise<Service> => {
+    if (!id) {
+      throw new Error("El ID es requerido");
+    }
+    return repository.getServiceById(id);
+  },
+
   getServices: async (): Promise<Service[]> => {
     return repository.getServices();
   },
 
   createService: async (service: NewService) => {
-    console.log("Create", service);
     if (!service.title) {
       throw new Error("El titulo es requerido");
     }
@@ -33,22 +37,7 @@ export const createServiceService = (repository: any) => ({
       throw new Error("ID requerido");
     }
 
-    const fields: string[] = [];
-    const values: any[] = [];
-
-    for (const field of acceptedFields) {
-      const value = service[field];
-      if (value !== undefined) {
-        fields.push(`${field} = ?`);
-        values.push(value);
-      }
-    }
-
-    if (fields.length === 0) {
-      throw new Error("No hay campos para actualiazr");
-    }
-
-    return repository.updateService(service.id, fields, values);
+    return repository.updateService(service);
   },
 
   deleteService: async (id: number) => {
