@@ -15,7 +15,7 @@ export default function MyServiceScreen() {
         {services.map((el, index) => (
           <ItemWithIcon
             title={el.title}
-            subtitle={`Cada ${el.changeEvery} km`}
+            subtitle={el.changeEvery !== 0 ? `Cada ${el.changeEvery} km` : ""}
             key={index}
             icon={el.icon}
             iconColor="orange"
