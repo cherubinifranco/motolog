@@ -17,4 +17,12 @@ export const BASIC = StyleSheet.create({
     color: "#666",
     fontSize: 14,
   },
+  row: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  optional: {
+    fontSize: 13,
+    color: "#666",
+  },
 });
