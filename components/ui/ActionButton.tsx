@@ -6,7 +6,7 @@ type ButtonType = {
   text: string;
   icon?: React.ComponentProps<typeof Ionicons>["name"];
   onPress: () => void;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "danger";
 };
 
 const ICON_COLOR = {
@@ -40,6 +40,9 @@ const textStyle = StyleSheet.create({
     color: "#000",
   },
   secondary: {
+    color: "#FFF",
+  },
+  danger: {
     color: "#FFF",
   },
 });
