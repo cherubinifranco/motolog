@@ -12,6 +12,7 @@ type ButtonType = {
 const ICON_COLOR = {
   primary: "#ff7b28",
   secondary: "#FFF",
+  danger: "#FFF",
 };
 
 export default function ActionButton({
@@ -23,7 +24,7 @@ export default function ActionButton({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles[variant], BASIC.littleShadow]}
+      style={[styles[variant], styles.block, BASIC.littleShadow]}
       activeOpacity={0.8}
     >
       <View style={styles.center}>
@@ -44,8 +45,7 @@ const textStyle = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  primary: {
-    backgroundColor: "#FFF",
+  block: {
     padding: 18,
     borderRadius: 16,
     marginBottom: 10,
@@ -53,14 +53,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  primary: {
+    backgroundColor: "#FFF",
+  },
   secondary: {
     backgroundColor: "#ff7b28",
-    padding: 18,
-    borderRadius: 16,
-    marginBottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  },
+  danger: {
+    backgroundColor: "#ff2f28",
   },
   center: {
     width: "100%",
