@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
   },
   bikeItem: {
     padding: 12,
-    borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
 });
