@@ -127,9 +127,13 @@ export default function NewServiceModal() {
           <TextInput
             placeholder="Ej: 5000"
             keyboardType="numeric"
-            value={kmRemainder}
-            onChangeText={setKmRemainder}
             style={styles.input}
+            value={kmRemainder}
+            onChangeText={(text) => {
+              if (/^\d*$/.test(text)) {
+                setKmRemainder(text);
+              }
+            }}
           />
         </View>
 
