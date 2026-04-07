@@ -17,7 +17,7 @@ type ConfirmActionPopupProps = {
   onConfirm: () => void;
 };
 
-export default function ConfirmActionPopup({
+export default function ConfirmActionCode({
   title = "title",
   message = "message",
   confirmText = "confirmText",

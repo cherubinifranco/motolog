@@ -3,7 +3,7 @@ import CurrentKm from "@/components/CurrentKm";
 import ServicesBlockToConfig from "@/components/editable/ServicesBlockToConfig";
 import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
 import ImageBanner from "@/components/ImageBanner";
-import ConfirmActionPopup from "@/components/inputs/ConfirmActionPopup";
+import ConfirmActionPopup from "@/components/inputs/ConfirmActionCode";
 import { useBikeContext } from "@/context/BikeContext";
 import { Ionicons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
