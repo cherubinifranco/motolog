@@ -1,6 +1,10 @@
 import { NewService, UpdateService } from "@/types/Service";
 
 export const createServiceRepository = (db: any) => ({
+  getServiceById: async (id: number) => {
+    return await db.getFirstAsync("SELECT * FROM services WHERE id = ?", [id]);
+  },
+
   getServices: async () => {
     return await db.getAllAsync("SELECT * FROM services");
   },
