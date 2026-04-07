@@ -1,7 +1,11 @@
 import { NewService, UpdateService } from "@/types/Service";
 
 export const createServiceRepository = (db: any) => ({
-  createBike: async (service: NewService) => {
+  getServices: async () => {
+    return await db.getAllAsync("SELECT * FROM services");
+  },
+
+  createService: async (service: NewService) => {
     return await db.runAsync(
       `INSERT INTO services (changeEvery, title, icon)
      VALUES (?, ?, ?)`,
@@ -9,7 +13,7 @@ export const createServiceRepository = (db: any) => ({
     );
   },
 
-  updateBike: async (service: UpdateService) => {
+  updateService: async (service: UpdateService) => {
     const acceptedFields = ["changeEvery", "title", "icon"] as const;
 
     const fields: string[] = [];

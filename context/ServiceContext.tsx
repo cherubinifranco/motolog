@@ -69,6 +69,7 @@ export const ServiceProvider = ({ children }: { children: ReactNode }) => {
   const createService = async (service: NewService) => {
     try {
       const newService = await createServiceService(service);
+      setServices((prev) => [...prev, newService]);
       return newService.id;
     } catch (err) {
       setError(err as Error);
@@ -82,7 +83,6 @@ export const ServiceProvider = ({ children }: { children: ReactNode }) => {
         prev.map((s) => (s.id === service.id ? { ...s, ...service } : s)),
       );
     } catch (err) {
-      console.log(err);
       setError(err as Error);
     }
   };
