@@ -1,21 +1,46 @@
 import {
+  LastServiceBike,
   NewServiceLog,
   ServiceLog,
   UpdateServiceLog,
-} from "@/types/Maintenance";
+} from "@/types/ServiceLog";
 
 export const createServiceLogsRepository = (db: any) => ({
-  getBServiceLogs: async (): Promise<ServiceLog[]> => {
-    return await db.getAllAsync("SELECT * FROM services");
+  getServiceLogs: async (): Promise<ServiceLog[]> => {
+    return await db.getAllAsync("SELECT * FROM service_logs");
+  },
+
+  getLastServiceBike: async (serviceLog: LastServiceBike) => {
+    const sql = `
+      SELECT * FROM service_logs
+      WHERE bikeId = ? AND serviceId = ?
+      ORDER BY date DESC
+      LIMIT 1
+      `;
+
+    const values = [serviceLog.bikeId, serviceLog.serviceId];
+
+    return await db.getFirstAsync(sql, values);
+  },
+
+  getServiceBike: async (serviceLog: LastServiceBike) => {
+    const sql = `
+    SELECT * FROM service_logs
+    WHERE bikeId = ? AND serviceId = ?
+    ORDER BY serviceDate DESC`;
+
+    const values = [serviceLog.bikeId, serviceLog.serviceId];
+
+    return await db.getAllAsync(sql, values);
   },
 
   createServiceLog: async (service_log: NewServiceLog) => {
-    const fields = ["bikeId", "serviceId", "mileage", "date", "cost"];
+    const fields = ["bikeId", "serviceId", "mileage", "serviceDate", "cost"];
     const values = [
       service_log.bikeId,
       service_log.serviceId,
       service_log.mileage,
-      service_log.date,
+      service_log.serviceDate,
       service_log.cost,
     ];
 
@@ -39,7 +64,7 @@ export const createServiceLogsRepository = (db: any) => ({
       "bikeId",
       "serviceId",
       "mileage",
-      "date",
+      "serviceDate",
       "cost",
       "note",
     ] as const;

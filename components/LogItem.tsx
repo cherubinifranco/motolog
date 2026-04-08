@@ -1,13 +1,14 @@
-import { Maintenance } from "@/types/Maintenance";
 import { Service } from "@/types/Service";
+import { ServiceLog } from "@/types/ServiceLog";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function LogItem({
   item,
 }: {
-  item: Maintenance & { service?: Service };
+  item: ServiceLog & { service?: Service };
 }) {
+  console.log(item);
   return (
     <View key={item.id} style={styles.historialCard}>
       <View style={styles.cardHeader}>
@@ -15,7 +16,7 @@ export default function LogItem({
           <Ionicons name={item.service?.icon} size={18} color={"#696969"} />
           <Text style={styles.tipo}>{item.service?.title}</Text>
         </View>
-        <Text style={styles.fecha}>{item.date}</Text>
+        <Text style={styles.fecha}>{item.serviceDate}</Text>
       </View>
 
       <View style={styles.detallesRow}>

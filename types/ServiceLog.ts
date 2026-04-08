@@ -3,7 +3,7 @@ export type Maintenance = {
   bikeId: number;
   serviceId: number;
   mileage: number;
-  date: string;
+  serviceDate: string;
   cost: number;
   note?: string;
 };
@@ -13,7 +13,7 @@ export type ServiceLog = {
   bikeId: number;
   serviceId: number;
   mileage: number;
-  date: string;
+  serviceDate: string;
   cost: number;
   note?: string;
 };
@@ -22,4 +22,9 @@ export type NewServiceLog = Omit<ServiceLog, "id">;
 
 export type UpdateServiceLog = Partial<Omit<ServiceLog, "id">> & {
   id: number;
+};
+
+export type LastServiceBike = {
+  bikeId: number;
+  serviceId: number;
 };

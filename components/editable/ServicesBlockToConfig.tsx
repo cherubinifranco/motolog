@@ -1,26 +1,20 @@
-import { useServicesItems } from "@/hooks/useServicesItems";
+import { useServiceContext } from "@/context/ServiceContext";
+import { useServiceLogService } from "@/hooks/useServiceLogsService";
 import { Ionicons } from "@expo/vector-icons";
 import {
-  ActivityIndicator,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 export default function ServicesBlockToConfig() {
-  const { items, loading } = useServicesItems();
-
-  if (loading)
-    return (
-      <View style={styles.toggleActive}>
-        <ActivityIndicator />
-      </View>
-    );
+  const { services } = useServiceContext();
+  const {} = useServiceLogService();
 
   return (
     <View>
-      {items.map((service) => (
+      {services.map((service) => (
         <View style={styles.card} key={service.id}>
           <View style={styles.cardRow}>
             <Ionicons name={service.icon} size={24} color={"#6352ff"} />

@@ -12,3 +12,8 @@ export type NewService = Omit<Service, "id">;
 export type UpdateService = Partial<Omit<Service, "id">> & {
   id: number;
 };
+
+export type ServiceWithStatus = Service & {
+  kmRemaining: number;
+  changeAt: number;
+};

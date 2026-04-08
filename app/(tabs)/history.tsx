@@ -1,9 +1,11 @@
 import SkeletonLoaderLogs from "@/components/emptyBlocks/SkeletonLoaderLogs";
 import LogItem from "@/components/LogItem";
-import { useMaintenance } from "@/hooks/useMaintenance";
-import { useServicesItems } from "@/hooks/useServicesItems";
+import InternalLink from "@/components/ui/InternalLink";
+import { useServiceContext } from "@/context/ServiceContext";
+import { useServiceLogService } from "@/hooks/useServiceLogsService";
+import { ServiceLog } from "@/types/ServiceLog";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -12,8 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Filter = {
   text: string;
@@ -30,42 +30,40 @@ const baseFilter: Filter = {
 };
 
 export default function HistorialScreen() {
+  const { getServiceLogs } = useServiceLogService();
+
+  const { services } = useServiceContext();
+
+  const [loading, setLoading] = useState(true);
+  const [serviceLogs, setServiceLogs] = useState<ServiceLog[]>([]);
+  const [sortedServices, setSortedServices] = useState<ServiceLog[]>([]);
+
+  useEffect(() => {
+    if (!loading) return;
+
+    const loadServices = async () => {
+      const result = await getServiceLogs();
+      console.log(result);
+      setServiceLogs(result);
+      setLoading(false);
+    };
+
+    loadServices();
+  }, []);
+
   const [filter, setFilter] = useState<Filter>(baseFilter);
 
   const [searchText, setSearchText] = useState("");
 
-  const { items: servicesItems, loading: loadingServices } = useServicesItems();
-  const { items: maintenanceItems, loading: loadingMaitenance } =
-    useMaintenance();
-
-  const serviceMap = useMemo(() => {
-    return new Map(servicesItems.map((s) => [s.id, s]));
-  }, [servicesItems]);
-
-  const enrichedMaintenances = useMemo(() => {
-    return maintenanceItems.map((m) => {
-      const service = serviceMap.get(m.serviceId);
-
-      return {
-        ...m,
-        service,
-      };
-    });
-  }, [maintenanceItems, serviceMap]);
-
   const filteredItems = useMemo(() => {
-    return enrichedMaintenances.filter((item) => {
-      const service = serviceMap.get(item.serviceId);
-
-      const matchesText =
-        filter.text === "" ||
-        service?.title.toLowerCase().includes(filter.text.toLowerCase());
+    return serviceLogs.filter((item) => {
+      const matchesText = filter.text === "";
 
       const matchesService =
         filter.serviceIds.length === 0 ||
         filter.serviceIds.includes(item.serviceId);
 
-      const itemDate = new Date(item.date).getTime();
+      const itemDate = new Date(item.serviceDate).getTime();
 
       const matchesFrom =
         !filter.fromDate || itemDate >= new Date(filter.fromDate).getTime();
@@ -88,12 +86,10 @@ export default function HistorialScreen() {
         matchesMax
       );
     });
-  }, [servicesItems, filter, serviceMap]);
-
-  const insets = useSafeAreaInsets();
+  }, [serviceLogs, filter]);
 
   return (
-    <View style={{ flex: 1, paddingTop: insets.top }}>
+    <View style={{ flex: 1, paddingTop: 20 }}>
       <View style={styles.header}>
         <Text style={styles.title}>Historial</Text>
       </View>
@@ -107,7 +103,7 @@ export default function HistorialScreen() {
         />
         <TextInput
           style={styles.searchInput}
-          placeholder="Buscar por tipo o fecha..."
+          placeholder="Buscar..."
           value={searchText}
           onChangeText={setSearchText}
           placeholderTextColor="#999"
@@ -120,7 +116,7 @@ export default function HistorialScreen() {
         style={styles.filtrosScroll}
         contentContainerStyle={styles.filtrosContainer}
       >
-        {servicesItems.map((service) => {
+        {services.map((service) => {
           const isActive = filter.serviceIds.includes(service.id);
 
           return (
@@ -145,23 +141,29 @@ export default function HistorialScreen() {
           );
         })}
       </ScrollView>
-
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {filteredItems.length === 0 ? (
-          loadingServices || loadingMaitenance ? (
+        {serviceLogs.length === 0 ? (
+          loading ? (
             [1, 2, 3, 4, 5, 6, 7, 8].map((_, index) => (
               <SkeletonLoaderLogs key={index} />
             ))
           ) : (
             <View style={styles.emptyState}>
-              <Ionicons name="document-text-outline" size={60} color="#CCC" />
-              <Text style={styles.emptyText}>
-                No se encontraron mantenimientos
-              </Text>
+              <View style={styles.emptyState}>
+                <Ionicons name="document-text-outline" size={60} color="#CCC" />
+                <Text style={styles.emptyText}>
+                  No se encontraron mantenimientos
+                </Text>
+              </View>
+              <InternalLink
+                text="Registrar el primer mantenimiento"
+                href="../mybikes"
+                icon="add"
+              />
             </View>
           )
         ) : (
-          filteredItems.map((item) => <LogItem item={item} key={item.id} />)
+          serviceLogs.map((item) => <LogItem item={item} key={item.id} />)
         )}
       </ScrollView>
     </View>
@@ -234,17 +236,15 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   scrollContent: {
-    minHeight: "100%",
     padding: 16,
-    paddingBottom: 24,
   },
   emptyState: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 80,
   },
   emptyText: {
-    marginTop: 16,
+    marginTop: 20,
+    marginBottom: 50,
     fontSize: 16,
     color: "#999",
   },
