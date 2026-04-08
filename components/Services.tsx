@@ -2,20 +2,20 @@ import { View } from "react-native";
 
 import SkeletonLoaderItem from "@/components/emptyBlocks/SkeletonLoaderItem";
 import { useBikeContext } from "@/context/BikeContext";
+import { useServiceContext } from "@/context/ServiceContext";
 import { useMaintenance } from "@/hooks/useMaintenance";
-import { useServicesItems } from "@/hooks/useServicesItems";
 import { Service } from "@/types/Service";
-import { ServiceItem } from "../components/ServiceItem";
+import { ItemWithIcon } from "./ui/ItemWithIcon";
 
 export default function ServicesScreen() {
+  const { services } = useServiceContext();
   const { selectedBike } = useBikeContext();
-  const { items: serviceItems, loading: loadingServices } = useServicesItems();
 
   const { items: maintenanceitems, loading: loadingMaitenance } =
     useMaintenance();
 
   if (selectedBike == null) return null;
-  if (loadingServices || loadingMaitenance)
+  if (loadingMaitenance)
     return [1, 2, 3, 4, 5].map((index) => <SkeletonLoaderItem key={index} />);
 
   const bikeMaitenance = maintenanceitems.filter(
@@ -32,9 +32,10 @@ export default function ServicesScreen() {
     return last;
   }
 
-  const sortedServices = serviceItems
+  const sortedServices = services
     .map((service) => {
       const last = getLastService(service);
+      console.log(last);
       const kmRemaining = last
         ? service.changeEvery - (selectedBike.currentKm - last.mileage)
         : service.changeEvery - selectedBike.currentKm;
@@ -48,15 +49,30 @@ export default function ServicesScreen() {
 
   return (
     <View>
-      {sortedServices.map((service) => (
-        <ServiceItem
-          key={service.id}
-          icon={service.icon}
-          title={service.title}
-          changeAt={service.changeAt}
-          kmRemaining={service.kmRemaining}
-        />
-      ))}
+      {sortedServices.map((service) => {
+        const status =
+          service.kmRemaining < 0
+            ? "red"
+            : service.kmRemaining < 1000
+              ? "orange"
+              : "green";
+        const sub =
+          service.kmRemaining < 0
+            ? `${(service.kmRemaining * -1).toLocaleString()} km pasados`
+            : service.kmRemaining < 1000
+              ? `${service.kmRemaining.toLocaleString()} km restantes`
+              : `${service.kmRemaining.toLocaleString()} km restantes`;
+        return (
+          <ItemWithIcon
+            key={service.id}
+            icon={service.icon}
+            title={service.title}
+            iconColor={status}
+            subtitle={sub}
+            onPress={() => alert(service.kmRemaining)}
+          />
+        );
+      })}
     </View>
   );
 }
