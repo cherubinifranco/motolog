@@ -1,5 +1,5 @@
 import BikeItem from "@/components/BikeItem";
-import ExternalLink from "@/components/ui/ExternalLink";
+import ExternalLink from "@/components/ui/InternalLink";
 import { useBikeContext } from "@/context/BikeContext";
 import { router, Stack } from "expo-router";
 import React from "react";

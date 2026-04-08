@@ -1,4 +1,4 @@
-import ExternalLink from "@/components/ui/ExternalLink";
+import ExternalLink from "@/components/ui/InternalLink";
 import { ItemWithIcon } from "@/components/ui/ItemWithIcon";
 import { useServiceContext } from "@/context/ServiceContext";
 import { Service } from "@/types/Service";

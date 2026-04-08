@@ -1,4 +1,4 @@
-import ExternalLink from "@/components/ui/ExternalLink";
+import ExternalLink from "@/components/ui/InternalLink";
 import { BASIC } from "@/styles/basicStyles";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";

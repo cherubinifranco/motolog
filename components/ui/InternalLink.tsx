@@ -17,7 +17,7 @@ const ICON_COLOR = {
   secondary: "#FFF",
 };
 
-export default function ExternalLink({
+export default function InternalLink({
   text,
   icon,
   href,

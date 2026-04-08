@@ -3,16 +3,10 @@ import BikeSelector from "@/components/BikeSelector";
 import CurrentKm from "@/components/CurrentKm";
 import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
 import ImageBanner from "@/components/ImageBanner";
+import InternalLink from "@/components/ui/InternalLink";
 import { useBikeContext } from "@/context/BikeContext";
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ServicesScreen from "../../components/Services";
 
@@ -37,10 +31,14 @@ export default function HomeScreen() {
 
             <ServicesScreen />
 
-            <TouchableOpacity style={styles.bigButton}>
-              <Ionicons name="add" size={24} color="#FFF" />
-              <Text style={styles.bigButtonText}>Registrar mantenimiento</Text>
-            </TouchableOpacity>
+            <View style={{ paddingTop: 20 }}>
+              <InternalLink
+                href="../mybikes"
+                icon="add"
+                text="Registrar Mantenimiento"
+                variant="secondary"
+              />
+            </View>
           </View>
         ) : (
           <EmptyStateBike />
