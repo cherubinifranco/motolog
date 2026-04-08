@@ -52,7 +52,6 @@ export const ServiceProvider = ({ children }: { children: ReactNode }) => {
   } = useServiceService();
 
   const getBikeServices = async (selectedBike: Bike) => {
-    console.log("getBikeServices in serviceContext");
     return [];
   };
 

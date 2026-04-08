@@ -115,8 +115,6 @@ export default function serviceDetail() {
       updateObj.changeEvery = newKm;
     }
 
-    console.log(updateObj);
-
     await updateService(updateObj);
 
     router.back();

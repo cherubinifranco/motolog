@@ -43,7 +43,6 @@ export default function HistorialScreen() {
 
     const loadServices = async () => {
       const result = await getServiceLogs();
-      console.log(result);
       setServiceLogs(result);
       setLoading(false);
     };

@@ -36,7 +36,6 @@ export default function HomeScreen() {
                 href="../mybikes"
                 icon="add"
                 text="Registrar Mantenimiento"
-                variant="secondary"
               />
             </View>
           </View>

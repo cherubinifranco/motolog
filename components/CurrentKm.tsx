@@ -10,7 +10,6 @@ export default function CurrentKm() {
   if (!selectedBike) return null;
 
   const handleSave = (newKm: number) => {
-    console.log("Nuevo KM:", newKm);
     updateBike({ currentKm: newKm, id: selectedBike.id });
     setShowPanel(false);
   };

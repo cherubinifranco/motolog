@@ -58,7 +58,6 @@ export const BikeProvider = ({ children }: { children: ReactNode }) => {
       setSelectedBike(newBike);
       return newBike.id;
     } catch (err) {
-      console.log(err);
       setError(err as Error);
     }
   };

@@ -8,7 +8,6 @@ export default function LogItem({
 }: {
   item: ServiceLog & { service?: Service };
 }) {
-  console.log(item);
   return (
     <View key={item.id} style={styles.historialCard}>
       <View style={styles.cardHeader}>

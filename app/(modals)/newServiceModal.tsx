@@ -93,11 +93,9 @@ export default function NewServiceModal() {
         changeEvery: kmRemainder ? Number(kmRemainder) : 0,
       });
 
-      console.log("EXITO", service);
       router.back();
     } catch (e) {
       alert(e);
-      console.log(e);
     }
   };
 
