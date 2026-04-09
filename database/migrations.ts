@@ -24,7 +24,7 @@ export const runMigrations = async (db: any) => {
     bikeId INTEGER NOT NULL, 
     serviceId INTEGER NOT NULL,
     mileage INTEGER NOT NULL, 
-    date TEXT NOT NULL, 
+    serviceDate TEXT NOT NULL, 
     cost INTEGER DEFAULT 0, 
     note TEXT,
     FOREIGN KEY (bikeId) REFERENCES bikes(id)
