@@ -33,7 +33,7 @@ export default function HomeScreen() {
 
             <View style={{ paddingTop: 20 }}>
               <InternalLink
-                href="../mybikes"
+                href="../newServiceLogModal"
                 icon="add"
                 text="Registrar Mantenimiento"
               />
