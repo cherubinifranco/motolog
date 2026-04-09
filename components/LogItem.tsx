@@ -1,5 +1,7 @@
+import { useServiceContext } from "@/context/ServiceContext";
 import { Service } from "@/types/Service";
 import { ServiceLog } from "@/types/ServiceLog";
+import { formatShortDate } from "@/utils/formatText";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -8,14 +10,21 @@ export default function LogItem({
 }: {
   item: ServiceLog & { service?: Service };
 }) {
+  const { services } = useServiceContext();
+
+  const service = services.find((s) => s.id === item.serviceId) || {
+    title: "Lost",
+    icon: "accessibility",
+  };
+
   return (
     <View key={item.id} style={styles.historialCard}>
       <View style={styles.cardHeader}>
         <View style={styles.row}>
-          <Ionicons name={item.service?.icon} size={18} color={"#696969"} />
-          <Text style={styles.tipo}>{item.service?.title}</Text>
+          <Ionicons name={service.icon} size={18} color={"#696969"} />
+          <Text style={styles.tipo}>{service.title}</Text>
         </View>
-        <Text style={styles.fecha}>{item.serviceDate}</Text>
+        <Text style={styles.fecha}>{formatShortDate(item.serviceDate)}</Text>
       </View>
 
       <View style={styles.detallesRow}>
@@ -100,8 +109,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   tipo: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 14,
+    fontWeight: "500",
     color: "#111",
   },
 });

@@ -1,20 +1,30 @@
 import {
-  LastServiceBike,
   NewServiceLog,
+  ServiceBike,
   ServiceLog,
   UpdateServiceLog,
 } from "@/types/ServiceLog";
 
 export const createServiceLogsRepository = (db: any) => ({
-  getServiceLogs: async (): Promise<ServiceLog[]> => {
-    return await db.getAllAsync("SELECT * FROM service_logs");
+  fetchLogs: async (offset = 0, limit = 50) => {
+    const logs = await db.allAsync(
+      `SELECT * FROM service_logs ORDER BY serviceDate DESC LIMIT ? OFFSET ?`,
+      [limit, offset],
+    );
+    return logs;
   },
 
-  getLastServiceBike: async (serviceLog: LastServiceBike) => {
+  getServiceLogs: async (): Promise<ServiceLog[]> => {
+    return await db.getAllAsync(
+      "SELECT * FROM service_logs ORDER BY serviceDate DESC",
+    );
+  },
+
+  getLastServiceBike: async (serviceLog: ServiceBike) => {
     const sql = `
       SELECT * FROM service_logs
       WHERE bikeId = ? AND serviceId = ?
-      ORDER BY date DESC
+      ORDER BY serviceDate DESC
       LIMIT 1
       `;
 
@@ -23,7 +33,7 @@ export const createServiceLogsRepository = (db: any) => ({
     return await db.getFirstAsync(sql, values);
   },
 
-  getServiceBike: async (serviceLog: LastServiceBike) => {
+  getServiceBike: async (serviceLog: ServiceBike) => {
     const sql = `
     SELECT * FROM service_logs
     WHERE bikeId = ? AND serviceId = ?

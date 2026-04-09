@@ -1,16 +1,10 @@
 import { useServiceContext } from "@/context/ServiceContext";
-import { useServiceLogService } from "@/hooks/useServiceLogsService";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function ServicesBlockToConfig() {
   const { services } = useServiceContext();
-  const {} = useServiceLogService();
+  const {} = useServiceContext();
 
   return (
     <View>

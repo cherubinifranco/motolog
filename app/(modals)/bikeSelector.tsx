@@ -5,13 +5,12 @@ import { router, Stack } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
-
 export default function BikeSelector() {
   const { bikes, setSelectedBike } = useBikeContext();
 
   return (
     <>
-      <Stack.Screen options={{ title: "Motos" }} />
+      <Stack.Screen options={{ title: "Seleccionar Moto" }} />
       <ScrollView>
         <View style={{ gap: 16, paddingTop: 20 }}>
           {bikes.map((bike, index) => (
@@ -20,7 +19,7 @@ export default function BikeSelector() {
               style={{ marginHorizontal: 16, marginVertical: 8 }}
               onPress={() => {
                 setSelectedBike(bike);
-                router.push("/bikedetail");
+                router.back();
               }}
             >
               <BikeItem bike={bike} key={index} />

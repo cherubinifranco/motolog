@@ -24,7 +24,7 @@ export type UpdateServiceLog = Partial<Omit<ServiceLog, "id">> & {
   id: number;
 };
 
-export type LastServiceBike = {
+export type ServiceBike = {
   bikeId: number;
   serviceId: number;
 };

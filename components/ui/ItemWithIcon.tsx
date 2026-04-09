@@ -5,7 +5,7 @@ type ItemProps = {
   icon: React.ComponentProps<typeof Ionicons>["name"];
   iconColor?: "green" | "blue" | "red" | "orange";
   title: string;
-  onPress: () => void;
+  onPress?: () => void;
   subtitle?: string;
 };
 

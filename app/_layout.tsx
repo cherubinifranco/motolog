@@ -10,6 +10,7 @@ import { initDatabase } from "@/database/init";
 
 import { BikeProvider } from "@/context/BikeContext";
 import { ServiceProvider } from "@/context/ServiceContext";
+import { ServiceLogProvider } from "@/context/ServiceLogContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { SQLiteProvider } from "expo-sqlite";
 
@@ -48,9 +49,11 @@ function RootLayoutNav() {
       <ThemeProvider value={DefaultTheme}>
         <BikeProvider>
           <ServiceProvider>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            </Stack>
+            <ServiceLogProvider>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              </Stack>
+            </ServiceLogProvider>
           </ServiceProvider>
         </BikeProvider>
       </ThemeProvider>

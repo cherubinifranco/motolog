@@ -4,14 +4,14 @@ import { View } from "react-native";
 import SkeletonLoaderItem from "@/components/emptyBlocks/SkeletonLoaderItem";
 import { useBikeContext } from "@/context/BikeContext";
 import { useServiceContext } from "@/context/ServiceContext";
-import { useServiceLogService } from "@/hooks/useServiceLogsService";
+import { useServiceLogContext } from "@/context/ServiceLogContext";
 import { ServiceWithStatus } from "@/types/Service";
 import { ItemWithIcon } from "./ui/ItemWithIcon";
 
 export default function ServicesScreen() {
   const { services } = useServiceContext();
   const { selectedBike } = useBikeContext();
-  const { getLastServiceBike } = useServiceLogService();
+  const { getLastServiceBike } = useServiceLogContext();
 
   const [loading, setLoading] = useState(true);
   const [sortedServices, setSortedServices] = useState<ServiceWithStatus[]>([]);
@@ -21,22 +21,24 @@ export default function ServicesScreen() {
 
     const loadServices = async () => {
       const result = await Promise.all(
-        services.map(async (service) => {
-          const last = await getLastServiceBike({
-            serviceId: service.id,
-            bikeId: selectedBike.id,
-          });
+        services
+          .filter((s) => s.changeEvery != 0)
+          .map(async (service) => {
+            const last = await getLastServiceBike({
+              serviceId: service.id,
+              bikeId: selectedBike.id,
+            });
 
-          const kmRemaining = last
-            ? service.changeEvery - (selectedBike.currentKm - last.mileage)
-            : service.changeEvery - selectedBike.currentKm;
+            const kmRemaining = last
+              ? service.changeEvery - (selectedBike.currentKm - last.mileage)
+              : service.changeEvery - selectedBike.currentKm;
 
-          const changeAt = last
-            ? service.changeEvery + (selectedBike.currentKm - last.mileage)
-            : service.changeEvery;
+            const changeAt = last
+              ? service.changeEvery + (selectedBike.currentKm - last.mileage)
+              : service.changeEvery;
 
-          return { ...service, kmRemaining, changeAt };
-        }),
+            return { ...service, kmRemaining, changeAt };
+          }),
       );
 
       result.sort((a, b) => a.kmRemaining - b.kmRemaining);

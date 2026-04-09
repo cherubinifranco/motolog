@@ -2,10 +2,10 @@ import SkeletonLoaderLogs from "@/components/emptyBlocks/SkeletonLoaderLogs";
 import LogItem from "@/components/LogItem";
 import InternalLink from "@/components/ui/InternalLink";
 import { useServiceContext } from "@/context/ServiceContext";
-import { useServiceLogService } from "@/hooks/useServiceLogsService";
+import { useServiceLogContext } from "@/context/ServiceLogContext";
 import { ServiceLog } from "@/types/ServiceLog";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -30,25 +30,10 @@ const baseFilter: Filter = {
 };
 
 export default function HistorialScreen() {
-  const { getServiceLogs } = useServiceLogService();
-
+  const { serviceLogs, loading } = useServiceLogContext();
   const { services } = useServiceContext();
 
-  const [loading, setLoading] = useState(true);
-  const [serviceLogs, setServiceLogs] = useState<ServiceLog[]>([]);
   const [sortedServices, setSortedServices] = useState<ServiceLog[]>([]);
-
-  useEffect(() => {
-    if (!loading) return;
-
-    const loadServices = async () => {
-      const result = await getServiceLogs();
-      setServiceLogs(result);
-      setLoading(false);
-    };
-
-    loadServices();
-  }, []);
 
   const [filter, setFilter] = useState<Filter>(baseFilter);
 
@@ -156,7 +141,7 @@ export default function HistorialScreen() {
               </View>
               <InternalLink
                 text="Registrar el primer mantenimiento"
-                href="../mybikes"
+                href="../newServiceLogModal"
                 icon="add"
               />
             </View>

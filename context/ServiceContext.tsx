@@ -19,7 +19,7 @@ type ServiceContextType = {
   error: Error | null;
 
   selectedService: Service | null;
-  setSelectedService: (service: Service) => void;
+  setSelectedService: (service: Service | null) => void;
 
   getServiceById: (id: number) => Promise<Service>;
   getServices: () => Promise<Service[]>;

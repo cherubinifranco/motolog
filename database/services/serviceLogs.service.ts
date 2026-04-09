@@ -1,8 +1,8 @@
 import {
-    LastServiceBike,
-    NewServiceLog,
-    ServiceLog,
-    UpdateServiceLog,
+  NewServiceLog,
+  ServiceBike,
+  ServiceLog,
+  UpdateServiceLog,
 } from "@/types/ServiceLog";
 
 const acceptedFields = [
@@ -19,7 +19,7 @@ export const createserviceLogService = (repository: any) => ({
     return repository.getServiceLogs();
   },
 
-  getLastServiceBike: async (serviceLog: LastServiceBike) => {
+  getLastServiceBike: async (serviceLog: ServiceBike) => {
     if (!serviceLog.serviceId) {
       throw new Error("ID del servicio requerido para la busqueda");
     }
@@ -29,7 +29,7 @@ export const createserviceLogService = (repository: any) => ({
     return repository.getLastServiceBike(serviceLog);
   },
 
-  getServiceBike: async (serviceLog: LastServiceBike) => {
+  getServiceBike: async (serviceLog: ServiceBike) => {
     if (!serviceLog.serviceId) {
       throw new Error("ID del servicio requerido para la busqueda");
     }
