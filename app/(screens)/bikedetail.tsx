@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 12,
     right: 12,
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     color: "#111",
   },
   editarMotoButton: {
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

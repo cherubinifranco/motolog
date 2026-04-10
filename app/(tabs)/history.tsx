@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
     borderColor: "#EEE",
   },
   filtroChipActive: {
-    backgroundColor: "#FF6200",
-    borderColor: "#FF6200",
+    backgroundColor: "#ff7b28",
+    borderColor: "#ff7b28",
   },
   filtroText: {
     fontSize: 14,

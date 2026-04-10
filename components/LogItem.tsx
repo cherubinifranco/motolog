@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   verMasText: {
-    color: "#FF6200",
+    color: "#ff7b28",
     fontSize: 14,
     fontWeight: "600",
   },

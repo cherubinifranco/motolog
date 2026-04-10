@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     color: "#111",
   },
   bigButton: {
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     borderRadius: 16,
     paddingVertical: 18,
     flexDirection: "row",

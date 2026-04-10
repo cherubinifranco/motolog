@@ -180,7 +180,7 @@ export default function serviceDetail() {
                   <Ionicons
                     name={icon}
                     size={24}
-                    color={selected ? "#fff" : "#FF6200"}
+                    color={selected ? "#fff" : "#ff7b28"}
                   />
                 </TouchableOpacity>
               );

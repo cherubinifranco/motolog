@@ -155,11 +155,11 @@ export default function NewServiceLogModal() {
 
           <Text style={styles.label}>Notas</Text>
           <TextInput
-            style={[styles.input, { height: 100 }]}
+            style={styles.notes}
             value={note}
+            multiline={true}
             onChangeText={setNote}
             placeholder="Detalles del service..."
-            multiline
           />
 
           <View style={styles.buttons}>
@@ -227,5 +227,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: "#FF6A00",
     borderRadius: 8,
+  },
+  notes: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+    height: 100,
+    textAlignVertical: "top",
   },
 });

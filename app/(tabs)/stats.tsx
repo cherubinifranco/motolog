@@ -61,7 +61,7 @@ export default function stats() {
           <View style={styles.legend}>
             <View style={styles.legendItem}>
               <View
-                style={[styles.legendColor, { backgroundColor: "#FF6200" }]}
+                style={[styles.legendColor, { backgroundColor: "#ff7b28" }]}
               />
               <Text style={styles.legendText}>Aceite - 40%</Text>
             </View>
@@ -96,7 +96,7 @@ export default function stats() {
           </View>
 
           <View style={styles.summaryCard}>
-            <Ionicons name="construct-outline" size={28} color="#FF6200" />
+            <Ionicons name="construct-outline" size={28} color="#ff7b28" />
             <Text style={styles.summaryValue}>8</Text>
             <Text style={styles.summaryLabel}>Mantenimientos</Text>
           </View>
@@ -108,7 +108,7 @@ export default function stats() {
           </View>
 
           <View style={styles.summaryCard}>
-            <Ionicons name="speedometer" size={28} color="#FF6200" />
+            <Ionicons name="speedometer" size={28} color="#ff7b28" />
             <Text style={styles.summaryValue}>4.500</Text>
             <Text style={styles.summaryLabel}>km recorridos</Text>
           </View>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   tabActive: {
     flex: 1,
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: "center",
@@ -221,13 +221,13 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     top: "50%",
     opacity: 0.3,
   },
   chartPoint: {
     flex: 1,
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
     minWidth: 20,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 25,
-    borderColor: "#FF6200",
+    borderColor: "#ff7b28",
   },
   donutInner: {
     alignItems: "center",
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   donutPercentage: {
     fontSize: 32,
     fontWeight: "700",
-    color: "#FF6200",
+    color: "#ff7b28",
   },
   donutLabel: {
     fontSize: 14,
@@ -311,12 +311,12 @@ const styles = StyleSheet.create({
   },
   nextKm: {
     fontSize: 15,
-    color: "#FF6200",
+    color: "#ff7b28",
     fontWeight: "500",
     marginBottom: 16,
   },
   recordarButton: {
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: "center",

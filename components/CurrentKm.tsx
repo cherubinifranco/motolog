@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     color: "#111",
   },
   actualizarButton: {
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     paddingHorizontal: 30,
     paddingVertical: 16,
     borderRadius: 12,

@@ -42,25 +42,25 @@ export default function PerfilScreen() {
 
           <TouchableOpacity style={[BASIC.littleShadow, styles.optionItem]}>
             <View style={styles.optionLeft}>
-              <Ionicons name="calendar" size={24} color="#FF6200" />
+              <Ionicons name="calendar" size={24} color="#ff7b28" />
               <Text style={styles.optionText}>Recordatorios</Text>
             </View>
             <Switch
               value={recordatoriosAuto}
               onValueChange={setRecordatoriosAuto}
-              trackColor={{ false: "#DDD", true: "#FF6200" }}
+              trackColor={{ false: "#DDD", true: "#ff7b28" }}
             />
           </TouchableOpacity>
 
           <TouchableOpacity style={[BASIC.littleShadow, styles.optionItem]}>
             <View style={styles.optionLeft}>
-              <Ionicons name="notifications" size={24} color="#FF6200" />
+              <Ionicons name="notifications" size={24} color="#ff7b28" />
               <Text style={styles.optionText}>Notificaciones push</Text>
             </View>
             <Switch
               value={notificacionesActivas}
               onValueChange={setNotificacionesActivas}
-              trackColor={{ false: "#DDD", true: "#FF6200" }}
+              trackColor={{ false: "#DDD", true: "#ff7b28" }}
             />
           </TouchableOpacity>
         </View>
@@ -114,13 +114,13 @@ const styles = StyleSheet.create({
     height: 110,
     borderRadius: 55,
     borderWidth: 4,
-    borderColor: "#FF6200",
+    borderColor: "#ff7b28",
   },
   editAvatarButton: {
     position: "absolute",
     bottom: 4,
     right: 4,
-    backgroundColor: "#FF6200",
+    backgroundColor: "#ff7b28",
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   },
   userMoto: {
     fontSize: 15,
-    color: "#FF6200",
+    color: "#ff7b28",
     fontWeight: "600",
     marginTop: 6,
   },

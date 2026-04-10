@@ -1,14 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-    StyleSheet,
-    Text,
-    View
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function AppBanner() {
   return (
     <View style={styles.logoContainer}>
-      <Ionicons name="bicycle" size={32} color="#FF6200" />
+      <Ionicons name="bicycle" size={32} color="#ff7b28" />
       <Text style={styles.appName}>
         Moto
         <Text style={styles.accent}>Log</Text>
@@ -29,6 +25,6 @@ const styles = StyleSheet.create({
     color: "#111",
   },
   accent: {
-    color: "#FF6200",
+    color: "#ff7b28",
   },
 });
