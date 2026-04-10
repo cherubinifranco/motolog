@@ -16,7 +16,7 @@ type BikeContextType = {
 
   loading: boolean;
   error: Error | null;
-
+  getBikeById: (id: number) => Promise<Bike>;
   loadBikes: () => Promise<void>;
   createBike: (bike: NewBike) => Promise<number>;
   updateBike: (bike: UpdateBike) => Promise<void>;
@@ -28,6 +28,7 @@ const BikeContext = createContext<BikeContextType | undefined>(undefined);
 export const BikeProvider = ({ children }: { children: ReactNode }) => {
   const {
     getBikes,
+    getBikeById: getBikeByIdService,
     createBike: createBikeService,
     updateBike: updateBikeService,
     deleteBike: deleteBikeService,
@@ -47,6 +48,15 @@ export const BikeProvider = ({ children }: { children: ReactNode }) => {
       setError(err as Error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getBikeById = async (id: number) => {
+    try {
+      const bike = await getBikeByIdService(id);
+      return bike;
+    } catch (err) {
+      setError(err as Error);
     }
   };
 
@@ -108,6 +118,7 @@ export const BikeProvider = ({ children }: { children: ReactNode }) => {
     <BikeContext.Provider
       value={{
         bikes,
+        getBikeById,
         selectedBike,
         setSelectedBike,
         loading,

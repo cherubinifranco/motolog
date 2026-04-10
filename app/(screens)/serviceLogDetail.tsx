@@ -1,7 +1,9 @@
+import ActionButton from "@/components/ui/ActionButton";
 import { ItemWithIcon } from "@/components/ui/ItemWithIcon";
 import { useBikeContext } from "@/context/BikeContext";
 import { useServiceContext } from "@/context/ServiceContext";
 import { useServiceLogContext } from "@/context/ServiceLogContext";
+import { UpdateServiceLog } from "@/types/ServiceLog";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -18,18 +20,30 @@ import {
   View,
 } from "react-native";
 
-export default function NewServiceLogModal() {
+export default function serviceLogDetail() {
   const router = useRouter();
 
-  const { selectedBike } = useBikeContext();
-  const { selectedService } = useServiceContext();
-  const { createServiceLog } = useServiceLogContext();
+  const { selectedServiceLog } = useServiceLogContext();
 
-  const [cost, setCost] = useState("");
-  const [note, setNote] = useState("");
-  const [mileage, setMileage] = useState("");
-  const [serviceDate, setServiceDate] = useState(new Date());
+  const { selectedBike, setSelectedBike, getBikeById } = useBikeContext();
+  const { selectedService, setSelectedService, getServiceById } =
+    useServiceContext();
+  const { updateServiceLog, deleteServiceLog } = useServiceLogContext();
+
+  if (!selectedServiceLog) return router.back();
+
+  const [cost, setCost] = useState(String(selectedServiceLog.cost));
+  const [note, setNote] = useState(selectedServiceLog.note);
+  const [mileage, setMileage] = useState(String(selectedServiceLog.mileage));
+  const [serviceDate, setServiceDate] = useState(
+    new Date(selectedServiceLog.serviceDate),
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const handleDelete = async () => {
+    await deleteServiceLog(selectedServiceLog.id);
+    return router.back();
+  };
 
   const handleSave = async () => {
     if (!selectedBike || !selectedService) {
@@ -42,25 +56,52 @@ export default function NewServiceLogModal() {
       return;
     }
 
+    let objUpdate: UpdateServiceLog = {
+      id: selectedServiceLog.id,
+    };
+
+    if (selectedService.id != selectedServiceLog.serviceId) {
+      objUpdate.serviceId = selectedService.id;
+    }
+
+    if (selectedBike.id != selectedServiceLog.bikeId) {
+      objUpdate.bikeId = selectedBike.id;
+    }
+
+    if (serviceDate.toISOString() != selectedServiceLog.serviceDate) {
+      objUpdate.serviceDate = serviceDate.toISOString();
+    }
+
+    if (Number(cost) != selectedServiceLog.cost) {
+      objUpdate.cost = Number(cost);
+    }
+
+    if (Number(mileage) != selectedServiceLog.mileage) {
+      objUpdate.mileage = Number(mileage);
+    }
+
+    if (note != selectedServiceLog.note) {
+      objUpdate.note = note;
+    }
+
     try {
-      createServiceLog({
-        bikeId: selectedBike.id,
-        serviceId: selectedService.id,
-        cost: Number(cost) || 0,
-        serviceDate: serviceDate.toISOString(),
-        mileage: Number(mileage) || 0,
-        note,
-      });
-      router.back();
+      updateServiceLog(objUpdate);
+
+      return router.back();
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
-    if (!selectedBike) return;
-    setMileage(String(selectedBike.currentKm));
-  }, [selectedBike]);
+    const loadData = async () => {
+      const bike = await getBikeById(selectedServiceLog.bikeId);
+      const service = await getServiceById(selectedServiceLog.serviceId);
+      setSelectedBike(bike);
+      setSelectedService(service);
+    };
+    loadData();
+  }, []);
 
   const onChangeDate = (_: any, selectedDate?: Date) => {
     setShowDatePicker(false);
@@ -71,7 +112,7 @@ export default function NewServiceLogModal() {
 
   return (
     <>
-      <Stack.Screen options={{ title: "Nuevo Mantenimiento" }} />
+      <Stack.Screen options={{ title: "Editar Mantenimiento" }} />
 
       <KeyboardAvoidingView
         style={{ flex: 1, backgroundColor: "#fff" }}
@@ -156,16 +197,16 @@ export default function NewServiceLogModal() {
           />
 
           <View style={styles.buttons}>
-            <TouchableOpacity
-              style={styles.cancel}
-              onPress={() => router.back()}
-            >
-              <Text>Cancelar</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.save} onPress={handleSave}>
-              <Text style={{ color: "#fff" }}>Guardar</Text>
-            </TouchableOpacity>
+            <ActionButton
+              text="Guardar"
+              variant="secondary"
+              onPress={handleSave}
+            />
+            <ActionButton
+              text="Eliminar Registro"
+              variant="danger"
+              onPress={handleDelete}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -176,7 +217,7 @@ export default function NewServiceLogModal() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    paddingBottom: 400,
+    paddingBottom: 60,
   },
   title: {
     fontSize: 20,
@@ -204,8 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttons: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    padding: 12,
     gap: 10,
     marginTop: 12,
   },

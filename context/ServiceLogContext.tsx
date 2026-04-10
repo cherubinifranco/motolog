@@ -28,6 +28,7 @@ type ServiceLogContextType = {
   createServiceLog: (serviceLog: NewServiceLog) => Promise<number>;
   updateServiceLog: (serviceLog: UpdateServiceLog) => Promise<void>;
   deleteServiceLog: (id: number) => Promise<void>;
+  refreshLogs: () => void;
 };
 
 const ServiceLogContext = createContext<ServiceLogContextType | undefined>(
@@ -60,6 +61,10 @@ export const ServiceLogProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const refreshLogs = () => {
+    loadServiceLogs();
   };
 
   const createServiceLog = async (serviceLog: NewServiceLog) => {
@@ -117,7 +122,7 @@ export const ServiceLogProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     loadServiceLogs();
-  }, [serviceLogs]);
+  }, []);
 
   return (
     <ServiceLogContext.Provider
@@ -133,6 +138,7 @@ export const ServiceLogProvider = ({ children }: { children: ReactNode }) => {
         createServiceLog,
         updateServiceLog,
         deleteServiceLog,
+        refreshLogs,
       }}
     >
       {children}

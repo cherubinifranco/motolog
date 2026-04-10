@@ -66,23 +66,7 @@ export const createserviceLogService = (repository: any) => ({
     if (!serviceLog.id) {
       throw new Error("ID requerido");
     }
-
-    const fields: string[] = [];
-    const values: any[] = [];
-
-    for (const field of acceptedFields) {
-      const value = serviceLog[field];
-      if (value !== undefined) {
-        fields.push(`${field} = ?`);
-        values.push(value);
-      }
-    }
-
-    if (fields.length === 0) {
-      throw new Error("No hay campos para actualizar");
-    }
-
-    return repository.updateServiceLog(serviceLog.id, fields, values);
+    return repository.updateServiceLog(serviceLog);
   },
 
   deleteServiceLog: async (id: number) => {

@@ -107,7 +107,7 @@ export const createServiceLogsRepository = (db: any) => ({
 
   deleteServiceLog: async (id: number) => {
     const query = `
-        DELETE FROM service_log
+        DELETE FROM service_logs
         WHERE id = ?`;
 
     return await db.runAsync(query, [id]);

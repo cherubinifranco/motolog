@@ -1,8 +1,10 @@
 import { useServiceContext } from "@/context/ServiceContext";
+import { useServiceLogContext } from "@/context/ServiceLogContext";
 import { Service } from "@/types/Service";
 import { ServiceLog } from "@/types/ServiceLog";
 import { formatShortDate } from "@/utils/formatText";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function LogItem({
@@ -11,6 +13,12 @@ export default function LogItem({
   item: ServiceLog & { service?: Service };
 }) {
   const { services } = useServiceContext();
+  const { setSelectedServiceLog } = useServiceLogContext();
+
+  const handleEdit = (item: ServiceLog) => {
+    setSelectedServiceLog(item);
+    router.push("/(screens)/serviceLogDetail");
+  };
 
   const service = services.find((s) => s.id === item.serviceId) || {
     title: "Lost",
@@ -44,8 +52,8 @@ export default function LogItem({
 
       {item.note && <Text style={styles.notas}>{item.note}</Text>}
 
-      <TouchableOpacity style={styles.verMas}>
-        <Text style={styles.verMasText}>Ver detalles y fotos →</Text>
+      <TouchableOpacity style={styles.verMas} onPress={() => handleEdit(item)}>
+        <Text style={styles.verMasText}>Ver detalles</Text>
       </TouchableOpacity>
     </View>
   );

@@ -3,6 +3,10 @@ import { Bike, NewBike, UpdateBike } from "@/types/Bike";
 const acceptedFields = ["brand", "model", "year", "currentKm"] as const;
 
 export const createBikeService = (repository: any) => ({
+  getBikeById: async (id: number) => {
+    return repository.getBikeById(id);
+  },
+
   getBikes: async (): Promise<Bike[]> => {
     return repository.getBikes();
   },
