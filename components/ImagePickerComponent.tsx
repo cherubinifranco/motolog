@@ -11,15 +11,17 @@ import {
 } from "react-native";
 
 type ImagePickerProps = {
+  currentImage?: string;
   onImageSelected: (uri: string) => void;
   placeholderText?: string;
 };
 
 export default function ImagePickerComponent({
+  currentImage,
   onImageSelected,
   placeholderText = "Sin imagen seleccionada",
 }: ImagePickerProps) {
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageUri, setImageUri] = useState<string | null>(currentImage || null);
   const [buttonsOpen, setButtonsOpen] = useState<boolean>(true);
 
   const pickImageFromGallery = async () => {
@@ -111,8 +113,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   image: {
-    width: 150,
-    height: 150,
+    width: "100%",
+    aspectRatio: "16/9",
     borderRadius: 12,
     marginBottom: 12,
   },

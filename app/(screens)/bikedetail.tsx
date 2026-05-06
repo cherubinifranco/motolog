@@ -1,23 +1,33 @@
-import BikeSelector from "@/components/BikeSelector";
 import CurrentKm from "@/components/CurrentKm";
 import ServicesBlockToConfig from "@/components/editable/ServicesBlockToConfig";
 import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
-import ImageBanner from "@/components/ImageBanner";
+import ImagePickerComponent from "@/components/ImagePickerComponent";
 import ConfirmActionPopup from "@/components/inputs/ConfirmActionCode";
 import { useBikeContext } from "@/context/BikeContext";
+import { UpdateBike } from "@/types/Bike";
+import { saveImageLocally } from "@/utils/saveImageLocally";
 import { Ionicons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import React, { useState } from "react";
+
 import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
 export default function MiMotoScreen() {
-  const { selectedBike, deleteBike } = useBikeContext();
+  const { selectedBike, deleteBike, updateBike } = useBikeContext();
+
+  if (!selectedBike) return <EmptyStateBike />;
+
+  const [brand, setBrand] = useState(selectedBike.brand);
+  const [model, setModel] = useState(selectedBike.model);
+  const [year, setYear] = useState(String(selectedBike.year));
+  const [image, setImage] = useState(selectedBike.imageUri || "");
 
   const [tryDelete, setTryDelete] = useState(false);
 
@@ -28,7 +38,42 @@ export default function MiMotoScreen() {
     router.back();
   }
 
-  if (!selectedBike) return <EmptyStateBike />;
+  function onSelectImage(uri: string) {
+    setImage(uri);
+  }
+
+  async function handleSave() {
+    if (selectedBike == null) return;
+
+    const parsedYear = Number(year);
+
+    let updateObj: UpdateBike = { id: selectedBike.id };
+
+    if (selectedBike.brand !== brand) {
+      updateObj.brand = brand;
+    }
+
+    if (selectedBike.year !== parsedYear) {
+      updateObj.year = parsedYear;
+    }
+
+    if (selectedBike.model !== model) {
+      updateObj.model = model;
+    }
+
+    if (selectedBike.brand !== brand) {
+      updateObj.brand = brand;
+    }
+
+    if (selectedBike.imageUri !== image) {
+      const parsedImage = await saveImageLocally(image);
+      updateObj.imageUri = parsedImage;
+    }
+
+    await updateBike(updateObj);
+
+    router.back();
+  }
 
   return (
     <>
@@ -39,9 +84,6 @@ export default function MiMotoScreen() {
           flex: 1,
         }}
       >
-        <View style={{ paddingHorizontal: 16 }}>
-          <BikeSelector />
-        </View>
         <ConfirmActionPopup
           title="Confirmar eliminación"
           message="Para eliminar esta moto, ingresa el siguiente código:"
@@ -52,20 +94,36 @@ export default function MiMotoScreen() {
         />
         {selectedBike && (
           <ScrollView contentContainerStyle={styles.scrollContent}>
-            <ImageBanner imageUri={selectedBike.imageUri} />
+            <ImagePickerComponent
+              currentImage={image}
+              onImageSelected={onSelectImage}
+            />
 
             <View style={styles.infoGrid}>
               <View style={styles.infoCard}>
                 <Text style={styles.infoLabel}>Marca</Text>
-                <Text style={styles.infoValue}>{selectedBike.brand}</Text>
+                <TextInput
+                  style={styles.infoValue}
+                  value={brand}
+                  onChangeText={setBrand}
+                />
               </View>
               <View style={styles.infoCard}>
                 <Text style={styles.infoLabel}>Modelo</Text>
-                <Text style={styles.infoValue}>{selectedBike.model}</Text>
+                <TextInput
+                  style={styles.infoValue}
+                  value={model}
+                  onChangeText={setModel}
+                />
               </View>
               <View style={styles.infoCard}>
                 <Text style={styles.infoLabel}>Año</Text>
-                <Text style={styles.infoValue}>{selectedBike.year}</Text>
+                <TextInput
+                  style={styles.infoValue}
+                  keyboardType="numeric"
+                  value={year}
+                  onChangeText={setYear}
+                />
               </View>
             </View>
 
@@ -73,13 +131,16 @@ export default function MiMotoScreen() {
 
             <ServicesBlockToConfig />
 
-            <TouchableOpacity style={styles.editarMotoButton}>
+            <TouchableOpacity
+              style={styles.editarMotoButton}
+              onPress={handleSave}
+            >
               <Ionicons
                 name="ellipsis-horizontal-circle-sharp"
                 size={20}
                 color="#FFF"
               />
-              <Text style={styles.editarMotoText}>Editar información</Text>
+              <Text style={styles.editarMotoText}>Guardar cambios</Text>
             </TouchableOpacity>
 
             <View style={styles.dangerZone}>
