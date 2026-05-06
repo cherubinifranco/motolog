@@ -15,30 +15,28 @@ export default function CurrentKm() {
   };
 
   return (
-    <>
-      <View style={styles.kmCard}>
-        <View style={styles.kmRow}>
-          <View>
-            <Text style={styles.kmLabel}>Kilometraje actual</Text>
-            <Text style={styles.kmValue}>{selectedBike.currentKm}</Text>
-          </View>
-
+    <View style={styles.kmCard}>
+      <View style={styles.kmRow}>
+        <View>
+          <Text style={styles.kmLabel}>Kilometraje actual</Text>
+          <Text style={styles.kmValue}>{selectedBike.currentKm}</Text>
+        </View>
+        {!showPanel && (
           <TouchableOpacity
             style={styles.actualizarButton}
             onPress={() => setShowPanel(true)}
           >
             <Text style={styles.actualizarText}>Actualizar</Text>
           </TouchableOpacity>
-        </View>
+        )}
       </View>
-
       <UpdateKmPanel
         visible={showPanel}
         currentKm={selectedBike.currentKm}
         onClose={() => setShowPanel(false)}
         onSave={handleSave}
       />
-    </>
+    </View>
   );
 }
 
@@ -47,7 +45,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     padding: 16,
     borderRadius: 16,
-    marginBottom: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -55,6 +52,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   kmRow: {
+    paddingBottom: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 type UpdateKmPanelProps = {
@@ -35,10 +35,6 @@ export default function UpdateKmPanel({
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Actualizar kilometraje</Text>
-
-      <Text style={styles.current}>Actual: {currentKm} km</Text>
-
       <TextInput
         style={styles.input}
         placeholder="Nuevo kilometraje"
@@ -61,22 +57,10 @@ export default function UpdateKmPanel({
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 100,
-  },
   card: {
     width: "100%",
     backgroundColor: "#fff",
     borderRadius: 16,
-    padding: 20,
   },
   title: {
     fontSize: 18,
