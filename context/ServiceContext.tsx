@@ -102,6 +102,7 @@ export const ServiceProvider = ({ children }: { children: ReactNode }) => {
     try {
       await deleteServiceService(id);
       setServices((prev) => prev.filter((s) => s.id !== id));
+      setSelectedService(null);
     } catch (err) {
       setError(err as Error);
     }
