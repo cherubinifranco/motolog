@@ -37,8 +37,8 @@ export default function NewServiceLogModal() {
       return;
     }
 
-    if (Number(mileage) < 1) {
-      alert("El kilometraje no puede ser menor a 1");
+    if (Number(mileage) < 0) {
+      alert("El kilometraje no puede ser menor a 0");
       return;
     }
 
@@ -89,9 +89,9 @@ export default function NewServiceLogModal() {
                   style={{ width: "100%", height: 160 }}
                   resizeMode="cover"
                 />
-                <Text style={styles.title}>
-                  {`${selectedBike.brand} ${selectedBike.model}`}
-                </Text>
+                <Text
+                  style={styles.title}
+                >{`${selectedBike.brand} ${selectedBike.model}`}</Text>
               </View>
             )}
           </TouchableOpacity>
