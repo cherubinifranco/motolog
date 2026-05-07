@@ -3,10 +3,10 @@ import ServicesBlockToConfig from "@/components/editable/ServicesBlockToConfig";
 import EmptyStateBike from "@/components/emptyBlocks/EmptyStateBike";
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import ConfirmActionPopup from "@/components/inputs/ConfirmActionCode";
+import ActionButton from "@/components/ui/ActionButton";
 import { useBikeContext } from "@/context/BikeContext";
 import { UpdateBike } from "@/types/Bike";
 import { saveImageLocally } from "@/utils/saveImageLocally";
-import { Ionicons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import React, { useState } from "react";
 
@@ -15,8 +15,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 export default function MiMotoScreen() {
@@ -131,26 +130,20 @@ export default function MiMotoScreen() {
 
             <ServicesBlockToConfig />
 
-            <TouchableOpacity
-              style={styles.editarMotoButton}
-              onPress={handleSave}
-            >
-              <Ionicons
-                name="ellipsis-horizontal-circle-sharp"
-                size={20}
-                color="#FFF"
-              />
-              <Text style={styles.editarMotoText}>Guardar cambios</Text>
-            </TouchableOpacity>
+            <ActionButton
+              text="Guardar Cambioss"
+              onPress={() => console.log("SD")}
+              variant="secondary"
+              icon="checkmark-circle"
+            />
 
             <View style={styles.dangerZone}>
-              <TouchableOpacity
-                style={styles.dangerButton}
+              <ActionButton
+                text="Eliminar Moto"
                 onPress={() => setTryDelete(true)}
-              >
-                <Ionicons name="close-circle" size={20} color="#FFF" />
-                <Text style={styles.editarMotoText}>Eliminar moto</Text>
-              </TouchableOpacity>
+                variant="danger"
+                icon="close-circle"
+              />
             </View>
           </ScrollView>
         )}
@@ -245,14 +238,5 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopColor: "rgb(255, 65, 65)",
     borderTopWidth: 2,
-  },
-  dangerButton: {
-    backgroundColor: "rgb(255, 65, 65)",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    paddingVertical: 16,
-    borderRadius: 16,
   },
 });
