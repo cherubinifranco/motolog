@@ -19,6 +19,13 @@ export const createserviceLogService = (repository: any) => ({
     return repository.getServiceLogs();
   },
 
+  getServiceLogsByYear: async (year: Number): Promise<ServiceLog[]> => {
+    if (!year) {
+      throw new Error("El año es requerido para buscar registror por año");
+    }
+    return repository.getServiceLogsByYear(year);
+  },
+
   getLastServiceBike: async (serviceLog: ServiceBike) => {
     if (!serviceLog.serviceId) {
       throw new Error("ID del servicio requerido para la busqueda");
@@ -75,5 +82,50 @@ export const createserviceLogService = (repository: any) => ({
     }
 
     return repository.deleteServiceLog(id);
+  },
+  getFilteredServiceLogs: async ({
+    bikeId,
+    serviceId,
+    startDate,
+    endDate,
+    offset,
+    limit,
+  }: {
+    bikeId?: number;
+    serviceId?: number;
+    startDate?: string;
+    endDate?: string;
+    offset?: number;
+    limit?: number;
+  }): Promise<ServiceLog[]> => {
+    if (
+      bikeId === undefined &&
+      serviceId === undefined &&
+      startDate === undefined &&
+      endDate === undefined
+    ) {
+      throw new Error("Debe proporcionar al menos un filtro");
+    }
+
+    if (startDate && isNaN(Date.parse(startDate))) {
+      throw new Error("Fecha inicial inválida");
+    }
+
+    if (endDate && isNaN(Date.parse(endDate))) {
+      throw new Error("Fecha final inválida");
+    }
+
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      throw new Error("La fecha inicial no puede ser mayor que la fecha final");
+    }
+
+    return repository.getFilteredServiceLogs({
+      bikeId,
+      serviceId,
+      startDate,
+      endDate,
+      offset,
+      limit,
+    });
   },
 });

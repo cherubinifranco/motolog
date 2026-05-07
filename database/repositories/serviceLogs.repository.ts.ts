@@ -6,11 +6,28 @@ import {
 } from "@/types/ServiceLog";
 
 export const createServiceLogsRepository = (db: any) => ({
-  fetchLogs: async (offset = 0, limit = 50) => {
+  fetchLogs: async (offset = 0, limit = 100) => {
     const logs = await db.allAsync(
       `SELECT * FROM service_logs ORDER BY serviceDate DESC LIMIT ? OFFSET ?`,
       [limit, offset],
     );
+    return logs;
+  },
+
+  getServiceLogsByYear: async (year: number): Promise<ServiceLog[]> => {
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+
+    const logs = await db.getAllAsync(
+      `
+      SELECT *
+      FROM service_logs
+      WHERE serviceDate BETWEEN ? AND ?
+      ORDER BY serviceDate DESC
+    `,
+      [startDate, endDate],
+    );
+
     return logs;
   },
 
@@ -111,5 +128,60 @@ export const createServiceLogsRepository = (db: any) => ({
         WHERE id = ?`;
 
     return await db.runAsync(query, [id]);
+  },
+
+  getFilteredServiceLogs: async ({
+    bikeId,
+    serviceId,
+    startDate,
+    endDate,
+    offset = 0,
+    limit = 100,
+  }: {
+    bikeId?: number;
+    serviceId?: number;
+    startDate?: string;
+    endDate?: string;
+    offset?: number;
+    limit?: number;
+  }): Promise<ServiceLog[]> => {
+    const conditions: string[] = [];
+    const values: any[] = [];
+
+    if (bikeId !== undefined) {
+      conditions.push("bikeId = ?");
+      values.push(bikeId);
+    }
+
+    if (serviceId !== undefined) {
+      conditions.push("serviceId = ?");
+      values.push(serviceId);
+    }
+
+    if (startDate !== undefined && endDate !== undefined) {
+      conditions.push("serviceDate BETWEEN ? AND ?");
+      values.push(startDate, endDate);
+    } else if (startDate !== undefined) {
+      conditions.push("serviceDate >= ?");
+      values.push(startDate);
+    } else if (endDate !== undefined) {
+      conditions.push("serviceDate <= ?");
+      values.push(endDate);
+    }
+
+    const whereClause =
+      conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    const query = `
+    SELECT *
+    FROM service_logs
+    ${whereClause}
+    ORDER BY serviceDate DESC
+    LIMIT ? OFFSET ?
+  `;
+
+    values.push(limit, offset);
+
+    return await db.getAllAsync(query, values);
   },
 });

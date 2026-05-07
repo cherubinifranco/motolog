@@ -1,117 +1,267 @@
-import { Ionicons } from "@expo/vector-icons";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import StatCard from "@/components/StatCard";
+import { useBikeContext } from "@/context/BikeContext";
+import { useServiceLogContext } from "@/context/ServiceLogContext";
+import { MONTHS, useServiceStats } from "@/hooks/useServiceStats";
+import { ServiceLog } from "@/types/ServiceLog";
+import { useEffect, useMemo, useState } from "react";
+import {
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function stats() {
+type Mode = "spent" | "services";
+
+export default function Stats() {
   const insets = useSafeAreaInsets();
+  const currentYear = new Date().getFullYear();
+
+  const { getServiceLogsByYear } = useServiceLogContext();
+  const { bikes } = useBikeContext();
+
+  const [logs, setLogs] = useState<ServiceLog[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [mode, setMode] = useState<Mode>("spent");
+  const [selectedBikeId, setSelectedBikeId] = useState<number | "all">("all");
+
+  const loadLogs = async () => {
+    const result = await getServiceLogsByYear(currentYear);
+    setLogs(result || []);
+  };
+
+  useEffect(() => {
+    loadLogs();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadLogs();
+    setRefreshing(false);
+  };
+
+  const filteredLogs = useMemo(() => {
+    if (selectedBikeId === "all") return logs;
+    return logs.filter((log) => log.bikeId === selectedBikeId);
+  }, [logs, selectedBikeId]);
+
+  const stats = useServiceStats(filteredLogs);
+
+  const maxValue = useMemo(() => {
+    return mode === "spent"
+      ? Math.max(...stats.monthly.map((m) => m.totalSpent), 1)
+      : Math.max(...stats.monthly.map((m) => m.totalServices), 1);
+  }, [stats, mode]);
+
+  const firstRow = stats.monthly.slice(0, 6);
+  const secondRow = stats.monthly.slice(6, 12);
+
+  const renderMonth = (m: any) => {
+    const value = mode === "spent" ? m.totalSpent : m.totalServices;
+
+    const height = value === 0 ? 6 : Math.max((value / maxValue) * 90, 6);
+
+    return (
+      <View key={m.month} style={styles.monthItem}>
+        <Text style={styles.monthLabel}>{MONTHS[m.month].slice(0, 3)}</Text>
+
+        <View
+          style={[
+            styles.bar,
+            {
+              height,
+              backgroundColor: mode === "spent" ? "#22C55E" : "#ff7b28",
+            },
+          ]}
+        />
+
+        <Text style={styles.monthValue}>
+          {mode === "spent"
+            ? `$${m.totalSpent.toLocaleString("es-AR")}`
+            : `${m.totalServices}x`}
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <View style={{ flex: 1, paddingTop: insets.top }}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Estadísticas</Text>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <Text style={styles.title}>Estadísticas</Text>
+
+        <View style={styles.toggle}>
+          <TouchableOpacity
+            style={[styles.toggleBtn, mode === "spent" && styles.toggleActive]}
+            onPress={() => setMode("spent")}
+          >
+            <Text
+              style={[
+                styles.toggleText,
+                mode === "spent" && styles.toggleTextActive,
+              ]}
+            >
+              Gastos
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.toggleBtn,
+              mode === "services" && styles.toggleActive,
+            ]}
+            onPress={() => setMode("services")}
+          >
+            <Text
+              style={[
+                styles.toggleText,
+                mode === "services" && styles.toggleTextActive,
+              ]}
+            >
+              Mantenimientos
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.tabsContainer}>
-          <View style={styles.tabActive}>
-            <Text style={styles.tabTextActive}>Gastos</Text>
-          </View>
-          <View style={styles.tabInactive}>
-            <Text style={styles.tabText}>Mantenimientos</Text>
-          </View>
+        <View style={styles.bikeSelector}>
+          <TouchableOpacity
+            style={[
+              styles.bikeChip,
+              selectedBikeId === "all" && styles.bikeChipActive,
+            ]}
+            onPress={() => setSelectedBikeId("all")}
+          >
+            <Text
+              style={[
+                styles.bikeText,
+                selectedBikeId === "all" && styles.bikeTextActive,
+              ]}
+            >
+              Todas
+            </Text>
+          </TouchableOpacity>
+
+          {bikes.map((bike) => (
+            <TouchableOpacity
+              key={bike.id}
+              style={[
+                styles.bikeChip,
+                selectedBikeId === bike.id && styles.bikeChipActive,
+              ]}
+              onPress={() => setSelectedBikeId(bike.id)}
+            >
+              <Text
+                style={[
+                  styles.bikeText,
+                  selectedBikeId === bike.id && styles.bikeTextActive,
+                ]}
+              >
+                {bike.brand} {bike.model}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
-        <View style={styles.chartCard}>
-          <Text style={styles.chartTitle}>Costos mensuales (ARS)</Text>
-          <View style={styles.lineChartContainer}>
-            <View style={styles.lineChart}>
-              <View style={styles.line} />
-              {[20, 35, 28, 45, 52, 40, 65, 78].map((height, index) => (
-                <View
-                  key={index}
-                  style={[styles.chartPoint, { height: height }]}
-                />
-              ))}
-            </View>
-          </View>
-          <View style={styles.monthLabels}>
-            {["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago"].map(
-              (mes) => (
-                <Text key={mes} style={styles.monthLabel}>
-                  {mes}
-                </Text>
-              ),
-            )}
-          </View>
-        </View>
-
-        <View style={styles.chartCard}>
-          <Text style={styles.chartTitle}>
-            Distribución por tipo de mantenimiento
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
+            {mode === "spent" ? "Gastos mensuales" : "Mantenimientos mensuales"}
           </Text>
 
-          <View style={styles.donutContainer}>
-            <View style={styles.donut}>
-              <View style={styles.donutInner}>
-                <Text style={styles.donutPercentage}>40%</Text>
-                <Text style={styles.donutLabel}>Aceite</Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.legend}>
-            <View style={styles.legendItem}>
-              <View
-                style={[styles.legendColor, { backgroundColor: "#ff7b28" }]}
-              />
-              <Text style={styles.legendText}>Aceite - 40%</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View
-                style={[styles.legendColor, { backgroundColor: "#22C55E" }]}
-              />
-              <Text style={styles.legendText}>Frenos - 25%</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View
-                style={[styles.legendColor, { backgroundColor: "#3B82F6" }]}
-              />
-              <Text style={styles.legendText}>Cadena - 20%</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View
-                style={[styles.legendColor, { backgroundColor: "#8B5CF6" }]}
-              />
-              <Text style={styles.legendText}>Otros - 15%</Text>
-            </View>
+          <View style={styles.monthGrid}>
+            <View style={styles.row}>{firstRow.map(renderMonth)}</View>
+            <View style={styles.row}>{secondRow.map(renderMonth)}</View>
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Resumen 2026</Text>
-
         <View style={styles.summaryGrid}>
-          <View style={styles.summaryCard}>
-            <Ionicons name="cash-outline" size={28} color="#22C55E" />
-            <Text style={styles.summaryValue}>$145.000</Text>
-            <Text style={styles.summaryLabel}>Total gastado</Text>
-          </View>
+          {mode === "spent" ? (
+            <>
+              <StatCard
+                icon="cash-outline"
+                color="#22C55E"
+                value={`$${stats.totalSpent.toLocaleString("es-AR")}`}
+                label="Total gastado"
+              />
 
-          <View style={styles.summaryCard}>
-            <Ionicons name="construct-outline" size={28} color="#ff7b28" />
-            <Text style={styles.summaryValue}>8</Text>
-            <Text style={styles.summaryLabel}>Mantenimientos</Text>
-          </View>
+              <StatCard
+                icon="trending-up"
+                color="#3B82F6"
+                value={`$${Math.round(stats.averageCost).toLocaleString(
+                  "es-AR",
+                )}`}
+                label="Promedio por mes"
+              />
 
-          <View style={styles.summaryCard}>
-            <Ionicons name="trending-up" size={28} color="#3B82F6" />
-            <Text style={styles.summaryValue}>$18.125</Text>
-            <Text style={styles.summaryLabel}>Promedio por servicio</Text>
-          </View>
+              <StatCard
+                icon="trophy-outline"
+                color="#F59E0B"
+                value={
+                  stats.mostExpensiveMonth
+                    ? MONTHS[stats.mostExpensiveMonth.month]
+                    : "-"
+                }
+                label="Mes más caro"
+              />
 
-          <View style={styles.summaryCard}>
-            <Ionicons name="speedometer" size={28} color="#ff7b28" />
-            <Text style={styles.summaryValue}>4.500</Text>
-            <Text style={styles.summaryLabel}>km recorridos</Text>
-          </View>
+              <StatCard
+                icon="wallet-outline"
+                color="#ff7b28"
+                value={
+                  stats.mostExpensiveMonth
+                    ? `$${stats.mostExpensiveMonth.totalSpent.toLocaleString(
+                        "es-AR",
+                      )}`
+                    : "-"
+                }
+                label="Gastado en ese mes"
+              />
+            </>
+          ) : (
+            <>
+              <StatCard
+                icon="construct-outline"
+                color="#ff7b28"
+                value={stats.totalServices}
+                label="Total Mantenimientos"
+              />
+
+              <StatCard
+                icon="trending-up"
+                color="#3B82F6"
+                value={(stats.totalServices / 12).toFixed(1)}
+                label="Promedio por mes"
+              />
+
+              <StatCard
+                icon="trophy-outline"
+                color="#F59E0B"
+                value={
+                  stats.mostActiveMonth
+                    ? MONTHS[stats.mostActiveMonth.month]
+                    : "-"
+                }
+                label="Mes más activo"
+              />
+
+              <StatCard
+                icon="construct-outline"
+                color="#ff7b28"
+                value={
+                  stats.mostActiveMonth
+                    ? stats.mostActiveMonth.totalServices
+                    : 0
+                }
+                label="Servicios ese mes"
+              />
+            </>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -123,213 +273,117 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 24,
   },
-  header: {
-    marginBottom: 24,
+
+  title: {
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 16,
   },
+
+  toggle: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 4,
+    marginBottom: 16,
+  },
+
+  toggleBtn: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: "center",
+    borderRadius: 10,
+  },
+
+  toggleActive: {
+    backgroundColor: "#ff7b28",
+  },
+
+  toggleText: {
+    color: "#666",
+    fontWeight: "500",
+  },
+
+  toggleTextActive: {
+    color: "#fff",
+  },
+
+  bikeSelector: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 16,
+  },
+
+  bikeChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#eee",
+  },
+
+  bikeChipActive: {
+    backgroundColor: "#ff7b28",
+    borderColor: "#ff7b28",
+  },
+
+  bikeText: {
+    color: "#666",
+    fontSize: 12,
+  },
+
+  bikeTextActive: {
+    color: "#fff",
+  },
+
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+  },
+
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 12,
+  },
+
+  monthGrid: {
+    gap: 16,
+  },
+
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  monthItem: {
+    flex: 1,
+    alignItems: "center",
+  },
+
+  bar: {
+    width: 10,
+    borderRadius: 6,
+    marginVertical: 6,
+  },
+
+  monthLabel: {
+    fontSize: 11,
+    color: "#666",
+  },
+
+  monthValue: {
+    fontSize: 10,
+    fontWeight: "600",
+  },
+
   summaryGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 12,
-    marginBottom: 24,
-  },
-  summaryCard: {
-    width: "48%",
-    backgroundColor: "#fff",
-    padding: 18,
-    borderRadius: 16,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  summaryValue: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: "#111",
-    marginTop: 8,
-  },
-  summaryLabel: {
-    fontSize: 13,
-    color: "#666",
-    textAlign: "center",
-    marginTop: 4,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "#111",
-  },
-  tabsContainer: {
-    flexDirection: "row",
-    backgroundColor: "#FFF",
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 24,
-  },
-  tabActive: {
-    flex: 1,
-    backgroundColor: "#ff7b28",
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  tabInactive: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  tabTextActive: {
-    color: "#FFF",
-    fontWeight: "600",
-  },
-  tabText: {
-    color: "#666",
-    fontWeight: "500",
-  },
-  chartCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  chartTitle: {
-    fontSize: 17,
-    fontWeight: "600",
-    color: "#111",
-    marginBottom: 16,
-  },
-  lineChartContainer: {
-    height: 180,
-    justifyContent: "flex-end",
-  },
-  lineChart: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    height: 140,
-    gap: 12,
-    paddingHorizontal: 10,
-  },
-  line: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: "#ff7b28",
-    top: "50%",
-    opacity: 0.3,
-  },
-  chartPoint: {
-    flex: 1,
-    backgroundColor: "#ff7b28",
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    minWidth: 20,
-  },
-  monthLabels: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 8,
-    paddingHorizontal: 8,
-  },
-  monthLabel: {
-    fontSize: 12,
-    color: "#666",
-  },
-  donutContainer: {
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  donut: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: "#F1F1F1",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 25,
-    borderColor: "#ff7b28",
-  },
-  donutInner: {
-    alignItems: "center",
-  },
-  donutPercentage: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: "#ff7b28",
-  },
-  donutLabel: {
-    fontSize: 14,
-    color: "#666",
-  },
-  legend: {
-    marginTop: 10,
-  },
-  legendItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  legendColor: {
-    width: 14,
-    height: 14,
-    borderRadius: 4,
-    marginRight: 10,
-  },
-  legendText: {
-    fontSize: 15,
-    color: "#444",
-  },
-
-  nextMaintenanceCard: {
-    backgroundColor: "#FFF",
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 40,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  nextTitle: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 6,
-  },
-  nextType: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#111",
-    marginBottom: 8,
-  },
-  nextKm: {
-    fontSize: 15,
-    color: "#ff7b28",
-    fontWeight: "500",
-    marginBottom: 16,
-  },
-  recordarButton: {
-    backgroundColor: "#ff7b28",
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  recordarText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginVertical: 8,
-    color: "#111",
   },
 });

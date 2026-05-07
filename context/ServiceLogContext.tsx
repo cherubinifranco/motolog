@@ -27,6 +27,7 @@ type ServiceLogContextType = {
   getServiceBike: (serviceBike: ServiceBike) => Promise<ServiceLog[]>;
   createServiceLog: (serviceLog: NewServiceLog) => Promise<number>;
   updateServiceLog: (serviceLog: UpdateServiceLog) => Promise<void>;
+  getServiceLogsByYear: (year: Number) => Promise<ServiceLog[]>;
   deleteServiceLog: (id: number) => Promise<void>;
   refreshLogs: () => void;
 };
@@ -49,6 +50,7 @@ export const ServiceLogProvider = ({ children }: { children: ReactNode }) => {
     getServiceBike: getServiceBikeService,
     getServiceLogs: getServiceLogsService,
     updateServiceLog: updateServiceLogService,
+    getServiceLogsByYear: getServiceLogsByYearService,
   } = useServiceLogService();
 
   const loadServiceLogs = async () => {
@@ -120,6 +122,15 @@ export const ServiceLogProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const getServiceLogsByYear = async (year: Number) => {
+    try {
+      const s = await getServiceLogsByYearService(year);
+      return s;
+    } catch (err) {
+      setError(err as Error);
+    }
+  };
+
   useEffect(() => {
     loadServiceLogs();
   }, []);
@@ -138,6 +149,7 @@ export const ServiceLogProvider = ({ children }: { children: ReactNode }) => {
         createServiceLog,
         updateServiceLog,
         deleteServiceLog,
+        getServiceLogsByYear,
         refreshLogs,
       }}
     >
