@@ -16,9 +16,11 @@ export default function ServicesBlockToConfig() {
             <View style={styles.cardInfo}>
               <View>
                 <Text style={styles.cardTitle}>{service.title}</Text>
-                <Text style={styles.cardSubtitle}>
-                  Cada {service.changeEvery} km
-                </Text>
+                {service.changeEvery !== 0 && (
+                  <Text style={styles.cardSubtitle}>
+                    Cada {service.changeEvery} km
+                  </Text>
+                )}
               </View>
               <TouchableOpacity style={styles.toggleActive}>
                 <Ionicons name="options" size={24} color="#6352ff" />

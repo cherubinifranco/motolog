@@ -73,7 +73,7 @@ export default function HistorialScreen() {
   }, [serviceLogs, filter]);
 
   return (
-    <View style={{ flex: 1, paddingTop: 20 }}>
+    <View style={{ flex: 0, paddingTop: 40 }}>
       <View style={styles.header}>
         <Text style={styles.title}>Historial</Text>
       </View>
@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 16,
+    paddingBottom: 200,
   },
   emptyState: {
     alignItems: "center",

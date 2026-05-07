@@ -58,6 +58,7 @@ export default function UpdateKmPanel({
 
 const styles = StyleSheet.create({
   card: {
+    paddingTop: 20,
     width: "100%",
     backgroundColor: "#fff",
     borderRadius: 16,
