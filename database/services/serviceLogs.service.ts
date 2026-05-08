@@ -19,7 +19,7 @@ export const createserviceLogService = (repository: any) => ({
     return repository.getServiceLogs();
   },
 
-  getServiceLogsByYear: async (year: Number): Promise<ServiceLog[]> => {
+  getServiceLogsByYear: async (year: Number) => {
     if (!year) {
       throw new Error("El año es requerido para buscar registror por año");
     }
