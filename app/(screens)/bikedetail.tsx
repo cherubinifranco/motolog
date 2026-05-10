@@ -10,13 +10,7 @@ import { saveImageLocally } from "@/utils/saveImageLocally";
 import { router, Stack } from "expo-router";
 import React, { useState } from "react";
 
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
-} from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function MiMotoScreen() {
   const { selectedBike, deleteBike, updateBike } = useBikeContext();
@@ -132,7 +126,7 @@ export default function MiMotoScreen() {
 
             <ActionButton
               text="Guardar Cambioss"
-              onPress={() => console.log("SD")}
+              onPress={handleSave}
               variant="secondary"
               icon="checkmark-circle"
             />

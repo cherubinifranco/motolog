@@ -27,8 +27,8 @@ export const runMigrations = async (db: any) => {
     serviceDate TEXT NOT NULL, 
     cost INTEGER DEFAULT 0, 
     note TEXT,
-    FOREIGN KEY (bikeId) REFERENCES bikes(id)
-    FOREIGN KEY (serviceId) REFERENCES services(id)
+    FOREIGN KEY (bikeId) REFERENCES bikes(id) ON DELETE CASCADE,
+    FOREIGN KEY (serviceId) REFERENCES services(id) ON DELETE CASCADE
   );
 `);
 };
